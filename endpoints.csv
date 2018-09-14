@@ -1,0 +1,23 @@
+Endpoint,HTTP Method, CRUD, authorized status, function,Response
+Welcome page:,,,,,
+/,GET,READ, none ,Everyone have access here. Say hello., Responds with welcome screen. login/welcome/
+Authorisation requests,,,,,
+/auth/, GET, READ, none, Makes a page so the user can enter login information., Returns a html+css+js so the user can authenticate.
+/auth/user/, POST, CREATE, none, Creates a new user. Info is passed in body?, request status and maybe cookie
+/auth/user/, DELETE, DELETE, user or admin, Deletes a user only if it is a admin or that user making the request, 200OK+json
+/auth/user/:userid/,GET, READ, admin , get information about user, Return profile page
+,,,,,
+Categories:,,,,,
+/categories/, GET, READ, none ,Generates a page with all categories. Everyone can do this., returns the page
+/categories/:name/, POST, CREATE, admin, Creates a new category, 200 OK+json
+/categories/:name/, GET, READ, user, Get all threads for that category., respond with a nice website
+,,,,,
+Threads:,,,,,
+/r/, GET, READ, none ,Generates a page to see all threads, Returns a nice page with all threads
+/r/:threadid/, GET, READ, none ,Shows the posts, Return posts page
+/r/:threadid/, DELETE, DELETE, admin/ owner-user ,Delete a thread, 200 OK+json
+/r/:threadid/, PUT, UPDATE, admin/ owner-user, Updates a thred, 200 OK+json
+,,,,,
+Posts:,,,,,
+/r/:threadid/post/, POST, CREATE, user/admin, Creates a new post in that thread, returns that thread with now updated post or deny.
+/r/:threadid/post/, DELETE, DELETE, user/admin, Deletes a post. Verify user/admin, returns status of request.

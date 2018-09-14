@@ -20,7 +20,7 @@ ADD ./backend/src /root/app/
 ENV FLASK_ENV="development"
 ENV FLASK_APP="__init__.py"
 
-CMD ["flask", "run"]
+CMD ["flask", "run", "--host=0.0.0.0"]
 
 
 EXPOSE 5000

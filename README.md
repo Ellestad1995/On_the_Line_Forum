@@ -78,8 +78,11 @@ And again: If you are on Windows, just install Debian or some UNIX system.
 
    `CREATE USER 'tom'@'localhost' IDENTIFIED BY 'jerry';`
 
-* Also make the database named: "onthelinedb".
-  I don't remember the commands for this at the moment.
+* Grant the user privileges for creating db. Only for use in development. This ensures that we can generate a new database with `flask init-db` when we need a fresh db.
+
+  `grant all privileges on *.* to 'tom'@'localhost';`
+   
+
 
 
 ## Working with mysql in python

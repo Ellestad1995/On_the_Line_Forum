@@ -1,0 +1,25 @@
+version: '2'
+services:
+    app:
+      image: on_the_line_forum
+      build:
+         context: ./
+         dockerfile: ./Docker/www/Dockerfile
+      ports:
+        - "5000:5000"
+      links:
+        - db
+      depends_on:
+        - "db"
+
+    db:
+      image: mariadb:10.3.7
+      hostname: db
+      environment:
+        - MYSQL_USER=tom
+        - MYSQL_PASSWORD=jerry
+        - MYSQL_DATABASE=onthelinedb
+      ports:
+        - 3306:3306
+      volumes:
+        - ./backend/src:/docker-entrypoint-initdb.d/:ro

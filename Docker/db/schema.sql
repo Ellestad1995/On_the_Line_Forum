@@ -2,6 +2,7 @@ CREATE DATABASE onthelinedb;
 
 USE `onthelinedb`;
 
+
 DROP TABLE IF EXISTS `customers`;
 
 CREATE TABLE `customers` (

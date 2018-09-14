@@ -19,7 +19,8 @@ services:
         - MYSQL_USER=tom
         - MYSQL_PASSWORD=jerry
         - MYSQL_DATABASE=onthelinedb
+        - MYSQL_ROOT_PASSWORD=toor
       ports:
         - 3306:3306
       volumes:
-        - ./backend/src:/docker-entrypoint-initdb.d/:ro
+        - ./Docker/db/schema.sql:/docker-entrypoint-initdb.d/init.sql

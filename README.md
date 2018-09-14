@@ -4,10 +4,10 @@ On the Line forum is a highly secure proposed way of handling an online forum. T
 ## Project setup
 
 **Prerequisites:**
-* Python3
+* python3
 * pip3
 * Unix/linux - ***If you are developing on windows you are on your own.***
-
+* python3-venv
 **Clone the project to your desired location**
 
 * `git clone (...)`

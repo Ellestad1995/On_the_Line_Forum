@@ -9,7 +9,7 @@ Authentication athorization:,,,,,
 ,,,,,
 Categories:,,,,,
 /categories/, GET, READ,none ,Generates a page with all categories. Everyone can do this., returns the page
-/categories/:name/, POST; CREATE, admin, Creates a new category, 200 OK+json
+/categories/:name/, POST, CREATE, admin, Creates a new category, 200 OK+json
 ,,,,,
 Threads:,,,,,
 /r/, GET, READ,none ,Generates a page to see all threads, Returns a nice page with all threads

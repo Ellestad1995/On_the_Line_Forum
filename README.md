@@ -8,6 +8,7 @@ On the Line forum is a highly secure proposed way of handling an online forum. T
 * pip3
 * Unix/linux - ***If you are developing on windows you are on your own.***
 * python3-venv
+
 **Clone the project to your desired location**
 
 * `git clone (...)`
@@ -18,12 +19,10 @@ On the Line forum is a highly secure proposed way of handling an online forum. T
 
 * `python3 -m venv venv`
 
-* `virtualenv venv`
-
-* `. venv/bin/activate`
+* `source venv/bin/activate`
 
 **Install the required packages from requirements in the virtual environment**
-* pip install -r requirements.txt
+* pip3 install -r requirements.txt
 
 **You should be all set up to work on the project**
 

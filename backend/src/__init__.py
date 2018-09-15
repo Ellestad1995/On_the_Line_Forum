@@ -1,6 +1,7 @@
 import os
 
 from flask import Flask
+from .db import get_db
 
 def create_app(test_config=None):
     # create and configure the app
@@ -38,7 +39,11 @@ def create_app(test_config=None):
     # a simple page that says hello
     @app.route('/hello')
     def hello():
-        return 'Hello, World!'
+        db = get_db()
+        cursor = db.cursor()
+        cursor.execute("SELECT * FROM customers")
+        result = cursor.fetchone()
+        return str(result)
 
 
 

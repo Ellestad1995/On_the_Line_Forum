@@ -36,7 +36,7 @@ CREATE TABLE `post` (
 );
 
 ALTER TABLE `user`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
   ADD CONSTRAINT `group_id_ref_group` FOREIGN KEY (`groupid`) REFERENCES
   `groupid` (`group`) ON UPDATE CASCADE;
 

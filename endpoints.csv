@@ -3,10 +3,13 @@ Welcome page:,,,,,
 /,GET,READ, none ,Everyone have access here. Say hello., Responds with welcome screen. login/welcome/
 Authorisation requests,,,,,
 /auth/, GET, READ, none, Makes a page so the user can enter login information., Returns a html+css+js so the user can authenticate.
-/auth/, POST, POST, none, User login, Welcome page for user.
+/auth/, POST, CREATE, none, User login, Welcome page for user.
 /auth/user/, POST, CREATE, none, Creates a new user. Info is passed in body?, request status and maybe cookie
 /auth/user/, DELETE, DELETE, user or admin, Deletes a user only if it is a admin or that user making the request, 200OK+json
 /auth/user/:userid/,GET, READ, admin , get information about user, Return profile page
+/auth/user/:userid/update,PUT, UPDATE, admin can update role of user, Return a confirmation
+
+
 ,,,,,
 Categories:,,,,,
 /categories/, GET, READ, none ,Generates a page with all categories. Everyone can do this., returns the page

@@ -17,6 +17,7 @@ Threads:,,,,,
 /r/:threadid/, GET, READ, none ,Shows the posts, Return posts page
 /r/:threadid/, DELETE, DELETE, admin/ owner-user ,Delete a thread, 200 OK+json
 /r/:threadid/, PUT, UPDATE, admin/ owner-user, Updates a thred, 200 OK+json
+/r/:threadid/, POST, CREATE, user/admin, Creates a new thread in a category, returns the created thread
 ,,,,,
 Posts:,,,,,
 /r/:threadid/post/, POST, CREATE, user/admin, Creates a new post in that thread, returns that thread with now updated post or deny.

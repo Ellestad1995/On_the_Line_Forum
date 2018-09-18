@@ -1,0 +1,13 @@
+Functionality,Test case
+
+Welcome page, welcome page, verify that correct page appears 
+Authorization requests, /auth/ GET login page for user, verify correct that it appears
+Authorization, POST User login, Verify that login works with correct information
+Authorization, POST User login, Verify that login doesn't work with incorrect information (password/username/both)
+Authorization/Threads/Posts, POST/PUT all input from users, test against common injection attacks (SQL)
+Categories, GET categories, check that all categories appears
+Categories, POST categories, check that new category is actually created
+Categories/threads, GET threads, check that all new threads appears
+
+Threads,,
+Posts,,

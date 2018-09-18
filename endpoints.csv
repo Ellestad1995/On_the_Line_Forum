@@ -3,6 +3,7 @@ Welcome page:,,,,,
 /,GET,READ, none ,Everyone have access here. Say hello., Responds with welcome screen. login/welcome/
 Authorisation requests,,,,,
 /auth/, GET, READ, none, Makes a page so the user can enter login information., Returns a html+css+js so the user can authenticate.
+/auth/, POST, POST, none, User login, Welcome page for user.
 /auth/user/, POST, CREATE, none, Creates a new user. Info is passed in body?, request status and maybe cookie
 /auth/user/, DELETE, DELETE, user or admin, Deletes a user only if it is a admin or that user making the request, 200OK+json
 /auth/user/:userid/,GET, READ, admin , get information about user, Return profile page
@@ -13,11 +14,11 @@ Categories:,,,,,
 /categories/:name/, GET, READ, user, Get all threads for that category., respond with a nice website
 ,,,,,
 Threads:,,,,,
-/:categories/r/, GET, READ, none ,Generates a page to see all threads, Returns a nice page with all threads
-/:categories/r/:threadid/, GET, READ, none ,Shows the posts, Return posts page
-/:categories/r/:threadid/, DELETE, DELETE, admin/ owner-user ,Delete a thread, 200 OK+json
-/:categories/r/:threadid/, PUT, UPDATE, admin/ owner-user, Updates a thred, 200 OK+json
-/:categories/r/:threadid/, POST, CREATE, user/admin, Creates a new thread in a category, returns the created thread
+/:categories/, GET, READ, none ,Generates a page to see all threads, Returns a nice page with all threads
+/:categories/:threadid/, GET, READ, none ,Shows the posts, Return posts page
+/:categories/:threadid/, DELETE, DELETE, admin/ owner-user ,Delete a thread, 200 OK+json
+/:categories/:threadid/, PUT, UPDATE, admin/ owner-user, Updates a thred, 200 OK+json
+/:categories/:threadid/, POST, CREATE, user/admin, Creates a new thread in a category, returns the created thread
 ,,,,,
 Posts:,,,,,
 /:categories/r/:threadid/post/, POST, CREATE, user/admin, Creates a new post in that thread, returns that thread with now updated post or deny.

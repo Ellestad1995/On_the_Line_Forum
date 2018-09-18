@@ -39,12 +39,6 @@ def create_app(test_config=None):
     # a simple page that says hello
     @app.route('/hello')
     def hello():
-        db = get_db()
-        cursor = db.cursor()
-        cursor.execute("SELECT * FROM customers")
-        result = cursor.fetchone()
-        return str(result)
-
-
+        return "hello verden"
 
     return app

@@ -31,6 +31,8 @@ DROP TABLE IF EXISTS `thread`;
 CREATE TABLE `thread` (
   `id` int NOT NULL AUTO_INCREMENT,
   `threadname` varchar(30) NOT NULL,
+  `categoryid` INT NOT NULL,
+  FOREIGN KEY (`categoryid`) REFERENCES `category` (`id`) ON DELETE CASCADE,
   PRIMARY KEY (`id`)
 );
 
@@ -40,6 +42,10 @@ CREATE TABLE `post` (
   `title` varchar(30) NOT NULL,
   `content` text NOT NULL,
   `timestamp` varchar(50) NOT NULL,
+  `userid` int NOT NULL,
+  `threadid` int NOT NULL,
+  FOREIGN KEY (`userid`) REFERENCES `user` (`id`) ON DELETE CASCADE,
+  FOREIGN KEY (`threadid`) REFERENCES `thread` (`id`) ON DELETE CASCADE,
   PRIMARY KEY (`id`)
 );
 

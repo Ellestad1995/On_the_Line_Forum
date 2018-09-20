@@ -22,7 +22,7 @@ def get_db():
             if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
                 click.echo("Connection failed! Check username and password")
             elif err.errno == errorcode.ER_BAD_DB_ERROR:
-                click.echo("Database does not exist")
+                click.echo("Database does not e     xist")
             else:
                 click.echo("Unknown error: {} ".format(err))
         else:

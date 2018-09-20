@@ -14,7 +14,14 @@ bp = Blueprint('categories', __name__, url_prefix='/')
 # /
 @bp.route('/', methods=['GET'])
 def test():
-    return "Test of categories"
+    db = get_db()
+    categories = db.execute(
+        'SELECT id, displayname'
+        ' FROM category'
+        ' ORDER BY id'
+    ).fetchall()
+
+    return render_template('category/index.html', categories=categories)
 
 #Return different pages whether the user is authenicated or not
 

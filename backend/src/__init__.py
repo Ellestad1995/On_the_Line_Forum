@@ -1,6 +1,7 @@
 import os
 
 from flask import Flask
+
 from .db import get_db
 
 def create_app(test_config=None):
@@ -37,9 +38,7 @@ def create_app(test_config=None):
     app.register_blueprint(posts.bp)
     app.register_blueprint(threads.bp)
 
-    # a simple page that says hello
-    @app.route('/hello')
-    def hello():
-        return "hello verden"
+    # The index page redirects to categories index()
+    app.add_url_rule('/', endpoint='categories.index')
 
     return app

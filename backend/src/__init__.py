@@ -31,10 +31,11 @@ def create_app(test_config=None):
     db.init_app(app)
 
     # Adding blueprints here. Use the same import line
-    from . import auth
+    from . import auth, categories, posts, threads
     app.register_blueprint(auth.bp)
-    # Need blueprint for categories
-    # Need blueprint for threads
+    app.register_blueprint(categories.bp)
+    app.register_blueprint(posts.bp)
+    app.register_blueprint(threads.bp)
 
     # a simple page that says hello
     @app.route('/hello')

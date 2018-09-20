@@ -9,12 +9,12 @@ from werkzeug.security import check_password_hash, generate_password_hash
 # the '.' represents __init__.py / this project. And we important the get_db function.
 from .db import get_db
 
-bp = Blueprint('categories', __name__, url_prefix='/')
+bp = Blueprint('categories', __name__, url_prefix='/categories')
 
 # /
 @bp.route('/', methods=['GET'])
-def test():
-    return "Test of categories"
+def index():
+    return render_template('category/index.html')
 
 #Return different pages whether the user is authenicated or not
 

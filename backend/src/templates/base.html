@@ -1,5 +1,8 @@
 <!doctype html>
 <head>
+<!--
+## Ypu can change the title of the page depending on in what module you are using
+-->
 <title>{% block title %}{% endblock %} - On the Line Forum</title>
 <!-- Required meta tags -->
 <meta charset="utf-8">
@@ -19,7 +22,7 @@
         <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="{{ url_for('categories.test') }}">Categories</a>
+        <a class="nav-link" href="{{ url_for('categories.index') }}">Categories</a>
       </li>
       <li class="nav-item">
         {% if g.user %}
@@ -28,7 +31,43 @@
          <a class="nav-link" href="{{ url_for('auth.login') }}">Login</a>
          {% endif %}
       </li>
+      {% if not g.user %}
+      <li class="nav-item">
+        <a class="nav-link" href="{{url_for('auth.createUser')}}">Register</a>
+      </li>
+      {% endif %}
     </ul>
   </div>
 </nav>
+<!--
+### In the block content below goes the code for your module
+### check out the auth module for how to use it.
+##
+-->
+<div class="container-fluid">{% block content %}{% endblock %}</div>
+<!-- Footer -->
+<footer class="page-footer font-small blue pt-4">
+
+    <!-- Footer Links -->
+    <div class="container-fluid text-center text-md-left">
+
+      <!-- Grid row -->
+      <div class="row">
+
+        <!-- Grid column -->
+        <div class="col-md-6 mt-md-0 mt-3">
+
+          <!-- Content -->
+          <h5 class="text-uppercase">On the Line Forum</h5>
+          <p>On the Line forum is a highly secure proposed way of handling an online forum. The code is kept at a minimum to only show how secure functions are setup and user functionality is kept at a minimum.</p>
+    </div>
+    <!-- Footer Links -->
+
+    <!-- Copyright -->
+    <div class="footer-copyright text-center py-3">© 2018 Copyright:
+      <a href="#"> On the Line Forum. A internet company</a>
+    </div>
+    <!-- Copyright -->
+  </footer>
+  <!-- Footer -->
 </body>

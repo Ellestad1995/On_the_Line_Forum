@@ -63,7 +63,7 @@ If you now browse to `http://127.0.0.1:500/hello` you will se a dummy page. That
 
 **You need mariadb database and mysql-client for connecting to the mariadb database.(Yeah..it's confusing)**
 
-* If you are using MacOS check out this guide: https://ellestad1995.github.io/legendary-adventure/#/macOS/devenvironment
+* If you are using MacOS check out this guide: https://docs.nivlheim.cloud/legendary-adventure/#/macOS/devenvironment
 
 * If you are on other UNIX environment see this guide:
 https://www.linode.com/docs/databases/mariadb/mariadb-setup-debian/
@@ -81,12 +81,14 @@ And again: If you are on Windows, just install Debian or some UNIX system.
 * Grant the user privileges for creating db. Only for use in development. This ensures that we can generate a new database with `flask init-db` when we need a fresh db.
 
   `grant all privileges on *.* to 'tom'@'localhost';`
-   
+
 
 
 
 ## Working with mysql in python
-Documentation can be found here: https://dev.mysql.com/doc/connector-python/en/connector-python-example-ddl.html
+Documentation can be found here:
+* https://dev.mysql.com/doc/connector-python/en/connector-python-example-ddl.html
+* https://mariadb.com/resources/blog/how-connect-python-programs-mariadb
 
 Example packages used:
 
@@ -94,3 +96,10 @@ Example packages used:
  import mysql.connector
  from mysql.connector import errorcode
  ```
+
+
+## Writing comments/documentation
+**The project uses reStructuredText/sphinx to generate the documentation**
+* http://www.sphinx-doc.org/en/master/usage/quickstart.html
+* https://docs.python-guide.org/writing/documentation/
+* https://devguide.python.org/documenting/#restructuredtext-primer

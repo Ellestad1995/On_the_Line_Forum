@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+<div>
+  {% for thread in threads %}
+    <article class="thread" style="background-color:#E5E5E5">
+        <div>
+          <h2>
+              <a href=/{{ thread.0 }} style="color:#202020" >{{ thread.1 | safe }}</a>
+          </h2>
+        </div>
+    </article>
+  {% if not loop.last %}
+    <hr>
+  {% endif %}
+  {% endfor %}
+<div>
+{% endblock %}

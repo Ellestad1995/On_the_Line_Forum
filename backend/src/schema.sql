@@ -48,7 +48,7 @@ CREATE TABLE `post` (
   FOREIGN KEY (`threadid`) REFERENCES `thread` (`id`) ON DELETE CASCADE,
   PRIMARY KEY (`id`)
 );
-
+INSERT INTO `thread` (`threadname`, `categoryid`) VALUES ("Trump", "1"), ("Obama", "1"), ("Red-team", "2"), ("Blue team", "2");
 INSERT INTO `category` (`displayname`) VALUES ("Politics"), ("Haking"), ("Cars"), ("Raid");
 INSERT INTO `group` VALUES (1000, "admin"), (6969, "user");
 INSERT INTO `user` (`username`, `password`, `salt`, `groupid`) VALUES ("AdminUser", "tmppassword", "2FGJM6GSDS", 1000);

@@ -12,11 +12,11 @@ from .db import get_db
 bp = Blueprint('categories', __name__, url_prefix='/categories')
 
 # /
-@bp.route('/', methods=['GET'])
+@bp.route('/categories', methods=['GET'])
 def index():
     cnx = get_db()
     cursor = cnx.cursor()
-    cursor.execute("select id, displayname as dname FROM category")
+    cursor.execute("select id, displayname FROM category")
     categories = cursor.fetchall()
     click.echo(str(categories))
     return render_template('category/index.html', categories=categories)

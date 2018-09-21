@@ -1,25 +1,17 @@
 {% extends 'base.html' %}
-
-{% block header %}
-    <h1>{% block title %}Categories{% endblock %}</h1>
-    {% if g.user %}
-        <!--action if the user is authorized-->
-    {% endif %}
-{% endblock %}
-
 {% block content %}
+<div>
   {% for category in categories %}
-    <article class="category">
-      <header>
+    <article class="category" style="background-color:#E5E5E5">
         <div>
-          <h4>
-              <a> href="<!-- category link to the right category -->" { category['displayname'] }}</a>
-          </h4>
+          <h2>
+              <a href="#" style="color:#202020" >{{ category.1 | safe }}</a>
+          </h2>
         </div>
-      </header>
     </article>
   {% if not loop.last %}
     <hr>
   {% endif %}
   {% endfor %}
+<div>
 {% endblock %}

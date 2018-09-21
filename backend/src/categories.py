@@ -14,13 +14,12 @@ bp = Blueprint('categories', __name__, url_prefix='/categories')
 # /
 @bp.route('/', methods=['GET'])
 def index():
-    #cnx = get_db()
-    #cursor = cnx.cursor()
-    #categories = cursor.execute(
-    #    'SELECT id, displayname FROM category ORDER BY id'
-    #).fetchall()
-
-    return render_template('category/index.html')
+    cnx = get_db()
+    cursor = cnx.cursor()
+    cursor.execute("select id, displayname as dname FROM category")
+    categories = cursor.fetchall()
+    click.echo(str(categories))
+    return render_template('category/index.html', categories=categories)
 
 #Return different pages whether the user is authenicated or not
 

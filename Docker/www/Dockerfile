@@ -15,10 +15,8 @@ ADD ./backend/requirements.txt /root/app/requirements.txt
 
 RUN pip3 install -r /root/app/requirements.txt
 
-ADD ./backend/src /root/app/
-
 ENV FLASK_ENV="development"
-ENV FLASK_APP="__init__.py"
+ENV FLASK_APP="/root/app"
 
 CMD ["flask", "run", "--host=0.0.0.0"]
 

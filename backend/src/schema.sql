@@ -13,9 +13,9 @@ DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `id` int NOT NULL AUTO_INCREMENT,
   `username` varchar(20) NOT NULL,
-  `password` varchar(250) NOT NULL,
-  `salt` varchar(20) NOT NULL,
+  `password` varchar(300) NOT NULL,
   `groupid` int(5) NOT NULL,
+  `token` varchar(500) NOT NULL,
   FOREIGN KEY (`groupid`) REFERENCES `group`(`groupid`) ON DELETE CASCADE,
   PRIMARY KEY (`id`)
 );
@@ -49,5 +49,6 @@ CREATE TABLE `post` (
   PRIMARY KEY (`id`)
 );
 
+INSERT INTO `category` (`displayname`) VALUES ("Politics"), ("Haking"), ("Cars"), ("Raid");
 INSERT INTO `group` VALUES (1000, "admin"), (6969, "user");
 INSERT INTO `user` (`username`, `password`, `salt`, `groupid`) VALUES ("AdminUser", "tmppassword", "2FGJM6GSDS", 1000);

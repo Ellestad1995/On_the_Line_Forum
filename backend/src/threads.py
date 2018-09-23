@@ -16,7 +16,7 @@ bp = Blueprint('threads', __name__, url_prefix='/')
 def showthreads(categoryid):
     cnx = get_db()
     cursor = cnx.cursor()
-    cursor.execute("select id, threadname FROM thread WHERE categoryid = " + categoryid)
+    results = cursor.execute("SELECT id, threadname FROM thread WHERE categoryid = %s", (categoryid,))
     threads = cursor.fetchall()	
     click.echo(str(threads))
     return render_template("thread/index.html", threads=threads)

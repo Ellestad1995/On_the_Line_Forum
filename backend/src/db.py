@@ -87,8 +87,20 @@ def insertDummyData():
     insert_dummy()
     click.echo("Done inserting dummy data")
 
+@click.command('fresh-db')
+@with_appcontext
+def fresh_db():
+    """ One command to rule them all """
+    click.echo("Runs: init-db")
+    init_db()
+    click.echo("Runs: insert dummy")
+    insert_dummy()
+    click.echo("Created a fresh database. Keep on the good work!!")
+
+
 def init_app(app):
     click.echo("init_app runs")
     app.teardown_appcontext(close_db)
     app.cli.add_command(init_db_command)
     app.cli.add_command(insertDummyData)
+    app.cli.add_command(fresh_db)

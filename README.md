@@ -45,6 +45,8 @@ You should initialize the database before you run the application to get all the
 
 `flask init-db` - Don't do this before setting up the db. see next section.
 
+`flask dummy` - To populate the database with dummy data. See dummyData.sql
+
 Use `flask run` in the virtual environment environment.
 You should now see something like this:
 ```

@@ -27,7 +27,8 @@ services:
       ports:
         - 3306:3306
       volumes:
-        - ./backend/src/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+        - ./backend/src/schema.sql:/docker-entrypoint-initdb.d/allthetables.sql
+        - ./backend/src/dummyData.sql:/docker-entrypoint-initdb.d/dummyData.sql
       healthcheck:
           test: ["CMD", "mysqladmin", "ping", "-u", "tom", "-pjerry"]
           timeout: 20s

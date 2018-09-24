@@ -2,8 +2,8 @@ CREATE DATABASE IF NOT EXISTS `onthelinedb`;
 
 USE `onthelinedb`;
 
-DROP TABLE IF EXISTS `group`;
-CREATE TABLE `group` (
+DROP TABLE IF EXISTS `usergroups`;
+CREATE TABLE `usergroups` (
   `groupid` int(5) NOT NULL,
   `groupname` varchar(20) NOT NULL,
   PRIMARY KEY (`groupid`)
@@ -16,7 +16,7 @@ CREATE TABLE `user` (
   `password` varchar(300) NOT NULL,
   `groupid` int(5) NOT NULL,
   `token` varchar(500) NOT NULL,
-  FOREIGN KEY (`groupid`) REFERENCES `group`(`groupid`) ON DELETE CASCADE,
+  FOREIGN KEY (`groupid`) REFERENCES `usergroups`(`groupid`) ON DELETE CASCADE,
   PRIMARY KEY (`id`)
 );
 
@@ -48,9 +48,3 @@ CREATE TABLE `post` (
   FOREIGN KEY (`threadid`) REFERENCES `thread` (`id`) ON DELETE CASCADE,
   PRIMARY KEY (`id`)
 );
-
-INSERT INTO `category` (`displayname`) VALUES ("Politics"), ("Haking"), ("Cars"), ("Raid");
-INSERT INTO `thread` (`threadname`, `categoryid`) VALUES ("Trump", "1"), ("Obama", "1"), ("Red-team", "2"), ("Blue team", "2");
-INSERT INTO `group` VALUES (1000, "admin"), (6969, "user");
-INSERT INTO `user` (`username`, `password`, `groupid`, `token`) VALUES ("AdminUser", "tmppassword", "1000", "6969testtoken6969");
-INSERT INTO `user` (`username`, `password`, `groupid`, `token`) VALUES ("Ola Nordman", "easypass", "6969", "6969testtoken6969");

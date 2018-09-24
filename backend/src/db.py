@@ -34,6 +34,10 @@ def get_db():
     return g.db
 
 def init_db():
+    """
+        The purpose of this function is to initialize the database.
+        The database should already exists, but we will create the tables.
+    """
     cnx = get_db()
     cursor = cnx.cursor()
     with current_app.open_resource('schema.sql') as f:
@@ -43,6 +47,23 @@ def init_db():
             click.echo("Failed creating database: {}".format(err))
             exit(1)
 
+def insert_dummy():
+    """
+    This function fills a existing databse with dummy data that is red from dummyData.sql
+
+    """
+    cnx = get_db()
+    cursor = cnx.cursor()
+    with current_app.open_resource('dummyData.sql', 'r') as f:
+        try:
+            for line in f.readlines():
+                click.echo("line: {}".format(line))
+                cursor.execute(line)
+        except mysql.connector.Error as err:
+            click.echo("Failed inserting dummy data: {}".format(err))
+            exit(1)
+    cnx.commit()
+    cursor.close()
 
 # Closes session
 def close_db(e=None):
@@ -59,8 +80,15 @@ def init_db_command():
     init_db()
     click.echo('Initialized the database.')
 
+@click.command('dummy')
+@with_appcontext
+def insertDummyData():
+    """Insert dummy data"""
+    insert_dummy()
+    click.echo("Done inserting dummy data")
 
 def init_app(app):
     click.echo("init_app runs")
     app.teardown_appcontext(close_db)
     app.cli.add_command(init_db_command)
+    app.cli.add_command(insertDummyData)

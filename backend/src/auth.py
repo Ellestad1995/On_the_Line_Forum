@@ -166,8 +166,8 @@ def login():
             error = "Username or password is incorrect"
         elif not passwordCheck:
             error = "Username or password is incorrect"
-        else:
-            # TODO: Generate token, session 
+#        else:
+            # TODO: Generate token, session
 
 
 

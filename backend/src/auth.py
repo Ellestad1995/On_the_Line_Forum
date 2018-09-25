@@ -36,7 +36,7 @@ def load_logged_in_user():
         'SELECT id, username, groupid FROM user WHERE token = ? ', (authorized)
         ).fetchone()
         if row is not None:
-            g.user = user
+            g.user = row
 
 
 
@@ -90,7 +90,7 @@ def createUser():
         elif not verifyPassword:
             error = "We need you to type your password again"
         elif not password == verifyPassword:
-            error = "Your passwords doesn't math"
+            error = "Your passwords doesn't match"
             # TODO: Make this check client side.
         elif not acceptTerms:
             error = "We need you to accept the terms"
@@ -110,7 +110,7 @@ def createUser():
             # Its all good
             # Create the user
             # werkzeug.security.generate_password_hash(password, method='pbkdf2:sha256', salt_length=8)
-            password_hash = generate_password_hash(password, mathod='pbkdf2:sha256', salt_length=10)
+            password_hash = generate_password_hash(password, method='pbkdf2:sha256', salt_length=10)
             try:
                 cnx.execute(
                 'INSERT INTO user (username, password) VALUES (?,?,?)', (username, password_hash))
@@ -129,10 +129,46 @@ def createUser():
 @bp.route('/', methods=['GET', 'POST'])
 def login():
     """
-
+    Render a sign in page
     """
     if request.method == 'GET':
+        # TODO: HTML template for loginpage
         return render_template('base.html')
+        
+    
+    elif request.method == 'POST':
+        """
+            Read form data
+            Check username presence
+            Check password presence
+            Check if username exists
+            Check if password is correct
+            login :O
+        """     
+        username = request.form['username']
+        pw = request.form['password']
+    
+        db = get_db()
+        cnx = db.cursor()
+
+        row = cnx.execute(
+        'SELECT username, password FROM user where username = ?', (username,)
+        ).fetchone()
+
+        passwordCheck = check_password_hash(row[password], pw)
+
+        error = None
+        if not username:
+            error = "A username is required"
+        elif not password:
+            error = "A password is required"
+        elif not row:
+            error = "Username or password is incorrect"
+        elif not passwordCheck:
+            error = "Username or password is incorrect"
+        else:
+            # TODO: Generate token, session 
+
 
 
 
@@ -149,10 +185,17 @@ def profile():
 # TODO: Implement this
 
 
+
+
 # /auth/user DELETE
 # Delete a user
 # TODO: Implement this
+#@bp.route('/user', methods=['DELETE'])
+#def deleteUser():
+
+
 
 # /auth/user/:userid/ GET
 # GET
 # TODO: Implement this
+

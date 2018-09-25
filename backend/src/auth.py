@@ -146,7 +146,7 @@ def login():
             login :O
         """     
         username = request.form['username']
-        pw = request.form['password']
+        password = request.form['password']
     
         db = get_db()
         cnx = db.cursor()
@@ -155,7 +155,7 @@ def login():
         'SELECT username, password FROM user where username = ?', (username,)
         ).fetchone()
 
-        passwordCheck = check_password_hash(row[password], pw)
+        passwordCheck = check_password_hash(row[1], password)
 
         error = None
         if not username:
@@ -167,8 +167,15 @@ def login():
         elif not passwordCheck:
             error = "Username or password is incorrect"
 #        else:
-            # TODO: Generate token, session
-
+            # TODO: Generate unique token
+            try:
+                cnx.execute(
+                        'UPDATE user SET token = ? WHERE username = ?', (uniqueToken, username)
+                )
+                cnx.commit()
+            except mysql.connector.Error as err:
+                # TODO: Error handling
+                None
 
 
 

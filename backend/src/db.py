@@ -12,26 +12,29 @@ DB_NAME='onthelinedb'
 def get_db():
     if 'db' not in g:
         try:
-            click.echo("Trying to connect")
             cnx = mysql.connector.connect(user='tom', password='jerry',
                               host='127.0.0.1',
                               database=DB_NAME)
             g.db = cnx
+            click.echo("Returns new connection")
             return g.db
         except mysql.connector.Error as err:
             if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
                 click.echo("Connection failed! Check username and password")
             elif err.errno == errorcode.ER_BAD_DB_ERROR:
-                click.echo("Database does not e     xist")
+                click.echo("Database does not exist")
             else:
                 click.echo("Unknown error: {} ".format(err))
-        else:
-            cnx.close()
+#        else:
+#            cnx.close()
         # Don't bother continueing execution if connection to db cannot
         # be established. DB is life.
-        exit(1)
-    click.echo("Using existing connection")
-    return g.db
+#        click.echo("Will exit from database")
+#        exit(1)
+    click.echo("Returns reused connection")
+    cnx = g.db
+    cnx.reconnect()
+    return cnx
 
 def init_db():
     """
@@ -46,28 +49,33 @@ def init_db():
         except mysql.connector.Error as err:
             click.echo("Failed creating database: {}".format(err))
             exit(1)
+    cursor.close()
 
 def insert_dummy():
     """
-    This function fills a existing databse with dummy data that is red from dummyData.sql
-
+    This function fills a existing database with dummy data that is red from dummyData.sql
     """
     cnx = get_db()
+    #cnx = mysql.connector.connect(user='tom', password='jerry',
+    #                  host='127.0.0.1',
+    #                  database=DB_NAME)
     cursor = cnx.cursor()
+    click.echo("Insert dummy")
     with current_app.open_resource('dummyData.sql', 'r') as f:
         try:
             for line in f.readlines():
                 click.echo("line: {}".format(line))
                 cursor.execute(line)
+                cnx.commit()
         except mysql.connector.Error as err:
             click.echo("Failed inserting dummy data: {}".format(err))
             exit(1)
-    cnx.commit()
+    #cnx.commit()
     cursor.close()
 
 # Closes session
 def close_db(e=None):
-    click.echo("close_db")
+    click.echo("Runs: close_db")
     cnx = g.pop('db', None)
     if cnx is not None:
         cnx.close()

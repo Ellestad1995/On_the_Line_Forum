@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+<div>
+  {% for post in posts %}
+    <article class="post" style="background-color:#E5E5E5">
+        <div>
+          <h2>
+              <a style="color:#202020" >{{ post.0 | e }}</a>
+          </h2>
+          <p> {{ post.1 | e  }}  </p>
+        </div>
+    </article>
+  {% if not loop.last %}
+    <hr>
+  {% endif %}
+  {% endfor %}
+<div>
+{% endblock %}

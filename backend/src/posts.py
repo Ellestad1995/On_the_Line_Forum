@@ -9,9 +9,14 @@ from werkzeug.security import check_password_hash, generate_password_hash
 # the '.' represents __init__.py / this project. And we important the get_db function.
 from .db import get_db
 
-bp = Blueprint('posts', __name__, url_prefix='/categories/r/id/post/')
+bp = Blueprint('posts', __name__, url_prefix='/')
 
-# /:categories/r/:threadid/post/
-@bp.route('/', methods=['GET'])
-def name():
-    return "Test of post"
+# /:categoryid
+@bp.route('/<categoryid>/<threadid>/', methods=['GET'])
+def showthreads(threadid, categoryid):
+    cnx = get_db()
+    cursor = cnx.cursor()
+    results = cursor.execute("SELECT title, content, threadid FROM post WHERE threadid = %s", (threadid,))
+    posts = cursor.fetchall() 
+    click.echo(str(posts))
+    return render_template("post/index.html", posts=posts)

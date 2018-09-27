@@ -5,7 +5,7 @@
     <article class="category" style="background-color:#E5E5E5">
         <div>
           <h2>
-              <a href=/{{ category.0 }}/ style="color:#202020" >{{ category.1 | safe }}</a>
+              <a href=/{{ category.0 }}/ style="color:#202020" >{{ category.1 | e }}</a>
           </h2>
         </div>
     </article>
@@ -15,14 +15,14 @@
   {% endfor %}
 <div>
 </br>
-{{ g.user }}
-{% if g %}
+{{ adminuser }}
+{% if adminuser %}
 <h4> ADMIN PANEL </h4>
     {% with messages = get_flashed_messages() %}
 	{% if messages %}
 		<ul>
 			{% for message in messages %}
-			<li>{{ message  }}</li>
+			<li>{{ message | e }}</li>
 			{%endfor%}
 		</ul>
 	{%endif%}

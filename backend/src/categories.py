@@ -13,12 +13,14 @@ bp = Blueprint('categories', __name__, url_prefix='/categories/')
 
 @bp.route('', methods=['GET'])
 def index():
-    click.echo(str(g))
+    click.echo(str(g.user))
     cnx = get_db()
     cursor = cnx.cursor()
     cursor.execute("select id, displayname FROM category")
     categories = cursor.fetchall()
-    return render_template('category/index.html', categories=categories, g=g)
+    #TODO: check to see if current user is admin, and pass it as a paramter to the template
+    adminuser = True
+    return render_template('category/index.html', categories=categories, adminuser=adminuser)
 
 @bp.route('', methods=['POST'])
 def add_entry():
@@ -50,4 +52,3 @@ def add_entry():
         
     return redirect("/")
 
-#Return different pages whether the user is authenicated or not

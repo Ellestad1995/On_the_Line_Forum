@@ -13,7 +13,7 @@ def get_db():
     if 'db' not in g:
         try:
             cnx = mysql.connector.connect(user='tom', password='jerry',
-                              host='127.0.0.1',
+                              host='db',
                               database=DB_NAME)
             g.db = cnx
             click.echo("Returns new connection")

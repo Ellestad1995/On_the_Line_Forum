@@ -133,7 +133,7 @@ def login():
     """
     if request.method == 'GET':
         # TODO: HTML template for loginpage
-        return render_template('base.html')
+        return render_template('auth/login.html', title='login')
         
     
     elif request.method == 'POST':

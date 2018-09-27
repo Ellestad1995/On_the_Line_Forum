@@ -132,7 +132,6 @@ def login():
     Render a sign in page
     """
     if request.method == 'GET':
-        # TODO: HTML template for loginpage
         return render_template('auth/login.html', title='login')
         
     
@@ -146,37 +145,37 @@ def login():
             login :O
         """     
         username = request.form['username']
-        password = request.form['password']
+        password = request.form['secretPassword']
     
         db = get_db()
         cnx = db.cursor()
 
         row = cnx.execute(
-        'SELECT username, password FROM user where username = ?', (username,)
-        ).fetchone()
-
-        passwordCheck = check_password_hash(row[1], password)
-
+        'SELECT username, password FROM user where username = (%s)', (username,))
+        
         error = None
-        if not username:
+        if not tUsername:
             error = "A username is required"
         elif not password:
             error = "A password is required"
         elif not row:
             error = "Username or password is incorrect"
-        elif not passwordCheck:
+        elif not ckeck_password_hash(row[0], password):
             error = "Username or password is incorrect"
-#        else:
+
+
+        
+        else:
             # TODO: Generate unique token
             try:
                 cnx.execute(
-                        'UPDATE user SET token = ? WHERE username = ?', (uniqueToken, username)
-                )
+                        'UPDATE user SET token = ? WHERE username = ?', (uniqueToken, username,))
                 cnx.commit()
             except mysql.connector.Error as err:
                 # TODO: Error handling
                 None
-
+        #redirect to a success page
+        return redirect(url_for('auth.login'))
 
 
 @bp.route('/profile', methods=['GET'])

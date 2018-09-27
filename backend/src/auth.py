@@ -1,5 +1,7 @@
 import functools
 import click
+import secrets
+import mysql.connector
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
@@ -151,30 +153,34 @@ def login():
         cnx = db.cursor()
 
         row = cnx.execute(
-        'SELECT username, password FROM user where username = (%s)', (username,))
-        
+        "SELECT username, password FROM user where username = %s", (username,))
+        row = cnx.fetchone()
         error = None
-        if not tUsername:
+        if not username:
             error = "A username is required"
         elif not password:
             error = "A password is required"
-        elif not row:
+        elif row == None:
             error = "Username or password is incorrect"
-        elif not ckeck_password_hash(row[0], password):
-            error = "Username or password is incorrect"
-
-
-        
+        elif not ckeck_password_hash(row[1], password):
+            #får feilmlding når den kjøres, funksjonen er undefined??
+            error = "Username or password is incorrect" 
         else:
-            # TODO: Generate unique token
+            # TODO: Security? secrets only generates a hex string of 490 chars with this
+            uniqueToken = secrets.token_hex(245) 
             try:
-                cnx.execute(
-                        'UPDATE user SET token = ? WHERE username = ?', (uniqueToken, username,))
-                cnx.commit()
+                cnx.execute('UPDATE user SET token = %s WHERE username = %s', (uniqueToken, username,))
+                db.commit()
+
             except mysql.connector.Error as err:
                 # TODO: Error handling
-                None
-        #redirect to a success page
+                click.echo("Unknown error: {} ".format(err))
+
+            #redirect to a success page
+            return redirect(url_for('auth.login'))
+        
+        # TODO: not flashing??
+        flash(error)
         return redirect(url_for('auth.login'))
 
 

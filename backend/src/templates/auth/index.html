@@ -22,4 +22,13 @@
   </div>
   <button type="submit" class="btn btn-primary">Get me On the Line</button>
 </form>
+{% with messages = get_flashed_messages() %}
+	{% if messages %}
+		<ul>
+			{% for message in messages %}
+			<b style="color:red"> {{ message | e }}</b>
+			{% endfor %}
+		</ul>
+	{% endif %}
+{% endwith %}
 {% endblock%}

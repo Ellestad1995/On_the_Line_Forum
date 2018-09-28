@@ -40,6 +40,8 @@ Set the environment variables so Flask know that we are developing and so it kno
 
 * `export FLASK_APP=backend/src/__init__.py`
 
+* `export FLASK_DB=127.0.0.1` or `export FLASK_DB=db` if on docker.
+
 
 You should initialize the database before you run the application to get all the necessary tables.(Currently we have not made the schema yet...So this will be pointless)
 

@@ -185,7 +185,7 @@ def login():
         elif not check_password_hash(row[1], password):
             #sjekk passord client side??
             #får feilmlding siden de dummydataen inneholder passord som ikke er hashet
-            error = "password is incorrect" 
+            error = "Password is incorrect" 
         else:
             # TODO: Security? secrets only generates a hex string of 490 chars with this
             uniqueToken = secrets.token_hex(245)

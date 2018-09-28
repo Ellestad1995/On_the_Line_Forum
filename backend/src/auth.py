@@ -128,6 +128,7 @@ def createUser():
             except mysql.connector.Error as err:
                 # TODO: Specific error handling
                 click.echo("Unknown error: {} ".format(err))
+                error = "Something went wrong"
             else:
                 click.echo("Something went wrong...")
 

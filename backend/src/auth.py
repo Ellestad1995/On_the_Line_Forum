@@ -180,15 +180,16 @@ def login():
             error = "A username/email is required"
         elif not password:
             error = "A password is required"
-        elif row == None:
-            error = "Username/email or password is incorrect"
-        elif not ckeck_password_hash(row[1], password):
+        elif row is None:
+            error = "Username/email is incorrect"
+        elif not check_password_hash(row[1], password):
             #sjekk passord client side??
             #får feilmlding siden de dummydataen inneholder passord som ikke er hashet
-            error = "Username/email or password is incorrect" 
+            error = "password is incorrect" 
         else:
             # TODO: Security? secrets only generates a hex string of 490 chars with this
             uniqueToken = secrets.token_hex(245)
+            click.echo(len(uniqueToken))
             try:
                 if boolMail:
                     cnx.execute(
@@ -197,28 +198,30 @@ def login():
                     cnx.execute(
                             'UPDATE user SET token = %s WHERE username = %s', (uniqueToken, username,))
                 db.commit()
+                return redirect(url_for('categories.index'))
 
             except mysql.connector.Error as err:
                 # TODO: Error handling
                 click.echo("Unknown error: {} ".format(err))
 
             #redirect to a success page
-            return redirect(url_for('/'))
         flash(error)
         return redirect(url_for('auth.login'))
 
 
+#same as /auth/user/:userid ?? 
 @bp.route('/profile', methods=['GET'])
 def profile():
     """
     Display a users information
     """
     if request.method == 'GET':
-        return render_template('base.html')
+        return render_template('auth/profile.html', title='profile')
 
 # /auth/user POST
 # Post request for creating a new user
 # TODO: Implement this
+# Same as register user?
 
 
 
@@ -228,12 +231,14 @@ def profile():
 # TODO: Implement this
 #@bp.route('/user', methods=['DELETE'])
 #def deleteUser():
+#    if request.method == 'DELETE':
 
 
 
 # /auth/user/:userid/ GET
 # GET
 # TODO: Implement this
+
 
 # Checks if provided string is an email
 def isEmail(txt):

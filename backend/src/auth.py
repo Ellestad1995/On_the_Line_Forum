@@ -84,8 +84,8 @@ def createUser():
         acceptTerms = request.form['acceptTerms']
         #click.echo("User gave us: `{}`".format([email,username,password,acceptTerms]))
         error = None
-        if not email:
-            error = "An email address is required"
+        if not email and isEmail(email) is False:
+            error = "A valid email address is required"
         elif not username:
             error = "A username is required"
         elif not password:
@@ -159,7 +159,7 @@ def login():
             Check if password is correct
             login :O
 
-        """   
+        """
 
         username = request.form['username']
         password = request.form['secretPassword']
@@ -174,7 +174,7 @@ def login():
         elif not boolMail:
             cnx.execute(
                     "SELECT username, password FROM user WHERE username = %s", (username,))
-        
+
         row = cnx.fetchone()
         error = None
         if not username:
@@ -186,7 +186,7 @@ def login():
         elif not ckeck_password_hash(row[1], password):
             #sjekk passord client side??
             #får feilmlding siden de dummydataen inneholder passord som ikke er hashet
-            error = "Username/email or password is incorrect" 
+            error = "Username/email or password is incorrect"
         else:
             # TODO: Security? secrets only generates a hex string of 490 chars with this
             uniqueToken = secrets.token_hex(245)
@@ -242,5 +242,3 @@ def isEmail(txt):
     if garbage is not None:
         return True
     return False
-
-

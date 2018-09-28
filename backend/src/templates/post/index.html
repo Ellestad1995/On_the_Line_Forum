@@ -9,7 +9,7 @@
            </div>
             <div style="flex:1; flex-basis:20%; background-color:#cccccc;" >
                  <p style="flex:1">TIMESTAMP</p> 
-                 <p style="flex:1">USERNAME</p>
+                 <p style="flex:1">USERNAME</p> <!-- INSERT DELETE BUTTON HERE -->
            </div>
        </div>
      </div>
@@ -19,4 +19,20 @@
   {% endfor %}
 <div style="clear:both"></div>
 <!-- If the user is authenicated: display this block of code -->
+<h2> Create new post </h2>
+<div>
+  <form action={{ url_for('posts.create_newpost', threadid=threadid, categoryid=categoryid) }} method="POST">
+    <h4>
+      Title
+    </h4>
+    <input type="text" name="title" placeholder="Enter title..." style="width:80%"><br>
+    <h4>
+      Content
+    </h4>
+    <textarea name="content" placeholder="Enter content..." style="width:80%;height:100px"></textarea>
+    <div>
+      <button type="submit">Submit</button>
+    </div>
+  </form>
+</div>
 {% endblock %}

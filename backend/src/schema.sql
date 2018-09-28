@@ -41,9 +41,9 @@ CREATE TABLE `thread` (
 DROP TABLE IF EXISTS `post`;
 CREATE TABLE `post` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `title` varchar(30) NOT NULL,
+  `title` varchar(500) NOT NULL,
   `content` text NOT NULL,
-  `timestamp` varchar(50) NOT NULL,
+  `timestamp` varchar(500) NOT NULL,
   `userid` int NOT NULL,
   `threadid` int NOT NULL,
   FOREIGN KEY (`userid`) REFERENCES `user` (`id`) ON DELETE CASCADE,

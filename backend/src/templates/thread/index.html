@@ -9,9 +9,8 @@
           </h2>
         </div>
     </article>
-  {% if not loop.last %}
-    <hr>
-  {% endif %}
+  {% else %}
+    <h3>There are no threads in this category</h3>
   {% endfor %}
 <div>
 {% endblock %}

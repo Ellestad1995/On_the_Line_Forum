@@ -1,18 +1,22 @@
 {% extends 'base.html' %}
 {% block content %}
-<div>
   {% for post in posts %}
-    <article class="post" style="background-color:#E5E5E5">
-        <div>
-          <h2>
-              <a style="color:#202020" >{{ post.0 | e }}</a>
-          </h2>
-          <p> {{ post.1 | e  }}  </p>
-        </div>
-    </article>
-  {% if not loop.last %}
-    <hr>
-  {% endif %}
+      <div>
+        <div style="flex-wrap: wrap;display:flex">
+            <div style="flex:1; flex-basis:80%; background-color:#E5E5E5;"> 
+                <h2>{{ post.0 | e }}</h2>
+                <p> {{ post.1 | e  }}</p>
+           </div>
+            <div style="flex:1; flex-basis:20%; background-color:#cccccc;" >
+                 <p style="flex:1">TIMESTAMP</p> 
+                 <p style="flex:1">USERNAME</p>
+           </div>
+       </div>
+     </div>
+     </br>
+  {% else %}
+    <h3>There are currently no posts in this thread.</h3>
   {% endfor %}
-<div>
+<div style="clear:both"></div>
+<!-- If the user is authenicated: display this block of code -->
 {% endblock %}

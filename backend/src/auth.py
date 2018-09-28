@@ -3,7 +3,7 @@ import click
 import secrets
 import mysql.connector
 import re
-from objects.UserClass import User
+from .objects.UserClass import User
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )

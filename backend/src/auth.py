@@ -102,9 +102,8 @@ def createUser():
         db = get_db()
         cnx = db.cursor()
 
-        if cnx.execute(
-        'SELECT id FROM user WHERE email = ?', (username,)
-        ).fetchone() is not None:
+        cnx.execute('SELECT id FROM user WHERE username = %s', (username,))
+        if cnx.fetchone() is not None:
             error = 'User {0} is already registered.'.format(username)
 
         if error is None:
@@ -115,8 +114,8 @@ def createUser():
             password_hash = generate_password_hash(password, method='pbkdf2:sha256', salt_length=10)
             try:
                 cnx.execute(
-                'INSERT INTO user (username, password) VALUES (?,?,?)', (username, password_hash))
-                cnx.commit()
+                'INSERT INTO user (username, password) VALUES (%s, %s)', (username, password_hash))
+                db.commit()
                 return redirect(url_for('auth'))
             except mysql.connector.Error as err:
                 # TODO: Specific error handling
@@ -131,7 +130,7 @@ def createUser():
 @bp.route('/', methods=['GET', 'POST'])
 def login():
     """
-    Render a sign in page
+    render a sign in page
     """
     if request.method == 'GET':
         return render_template('auth/login.html', title='login')
@@ -152,9 +151,10 @@ def login():
         db = get_db()
         cnx = db.cursor()
 
-        row = cnx.execute(
+        cnx.execute(
         "SELECT username, password FROM user where username = %s", (username,))
         row = cnx.fetchone()
+        click.echo(row)
         error = None
         if not username:
             error = "A username is required"
@@ -163,7 +163,8 @@ def login():
         elif row == None:
             error = "Username or password is incorrect"
         elif not ckeck_password_hash(row[1], password):
-            #får feilmlding når den kjøres, funksjonen er undefined??
+            #sjekk passord client side??
+            #får feilmlding siden de dummydataen inneholder passord som ikke er hashet
             error = "Username or password is incorrect" 
         else:
             # TODO: Security? secrets only generates a hex string of 490 chars with this

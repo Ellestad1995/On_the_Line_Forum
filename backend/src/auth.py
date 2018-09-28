@@ -35,10 +35,10 @@ def load_logged_in_user():
     else:
         cnx = get_db()
         cursor = cnx.cursor()
-        row = cursor.execute(
-        'SELECT id, username, groupid FROM user WHERE token = ? ', (authorized)
-        ).fetchone()
+        query = 'SELECT id, username, groupid, email, token, tokentimestamp FROM user WHERE token = %s '
+        row = cursor.execute(query, (authorized,)).fetchone()
         if row is not None:
+
             g.user = row
 
 
@@ -84,8 +84,8 @@ def createUser():
         acceptTerms = request.form['acceptTerms']
         #click.echo("User gave us: `{}`".format([email,username,password,acceptTerms]))
         error = None
-        if not email:
-            error = "An email address is required"
+        if not email and isEmail(email) is False:
+            error = "A valid email address is required"
         elif not username:
             error = "A username is required"
         elif not password:
@@ -129,6 +129,7 @@ def createUser():
             except mysql.connector.Error as err:
                 # TODO: Specific error handling
                 click.echo("Unknown error: {} ".format(err))
+                error = "Something went wrong"
             else:
                 click.echo("Something went wrong...")
 
@@ -158,7 +159,7 @@ def login():
             Check if password is correct
             login :O
 
-        """   
+        """
 
         username = request.form['username']
         password = request.form['secretPassword']
@@ -173,15 +174,15 @@ def login():
         elif not boolMail:
             cnx.execute(
                     "SELECT username, password FROM user WHERE username = %s", (username,))
-        
+
         row = cnx.fetchone()
         error = None
         if not username:
             error = "A username/email is required"
         elif not password:
             error = "A password is required"
-        elif row is None:
-            error = "Username/email is incorrect"
+        elif row == None:
+            error = "Username/email or password is incorrect"
         elif not check_password_hash(row[1], password):
             #sjekk passord client side??
             #får feilmlding siden de dummydataen inneholder passord som ikke er hashet
@@ -189,7 +190,6 @@ def login():
         else:
             # TODO: Security? secrets only generates a hex string of 490 chars with this
             uniqueToken = secrets.token_hex(245)
-            click.echo(len(uniqueToken))
             try:
                 if boolMail:
                     cnx.execute(
@@ -198,30 +198,28 @@ def login():
                     cnx.execute(
                             'UPDATE user SET token = %s WHERE username = %s', (uniqueToken, username,))
                 db.commit()
-                return redirect(url_for('categories.index'))
 
             except mysql.connector.Error as err:
                 # TODO: Error handling
                 click.echo("Unknown error: {} ".format(err))
 
             #redirect to a success page
+            return redirect(url_for('/'))
         flash(error)
         return redirect(url_for('auth.login'))
 
 
-#same as /auth/user/:userid ?? 
 @bp.route('/profile', methods=['GET'])
 def profile():
     """
     Display a users information
     """
     if request.method == 'GET':
-        return render_template('auth/profile.html', title='profile')
+        return render_template('base.html')
 
 # /auth/user POST
 # Post request for creating a new user
 # TODO: Implement this
-# Same as register user?
 
 
 
@@ -231,7 +229,6 @@ def profile():
 # TODO: Implement this
 #@bp.route('/user', methods=['DELETE'])
 #def deleteUser():
-#    if request.method == 'DELETE':
 
 
 
@@ -239,12 +236,9 @@ def profile():
 # GET
 # TODO: Implement this
 
-
 # Checks if provided string is an email
 def isEmail(txt):
     garbage = re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", txt)
     if garbage is not None:
         return True
     return False
-
-

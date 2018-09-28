@@ -3,17 +3,21 @@ import mysql.connector
 from mysql.connector import errorcode
 from flask import current_app, g
 from flask.cli import with_appcontext
+import os
 
 DB_NAME='onthelinedb'
 # Reference for mysql: https://dev.mysql.com/doc/connector-python/en/connector-python-example-ddl.html
 # Returns the already established connection if it exists or tries to
 # create a new one.
 # Handles error for "access denied" and "unknown database"
+
+
+
 def get_db():
     if 'db' not in g:
         try:
             cnx = mysql.connector.connect(user='tom', password='jerry',
-                              host='db',
+                              host=os.environ['flask_db'],
                               database=DB_NAME)
             g.db = cnx
             click.echo("Returns new connection")

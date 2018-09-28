@@ -3,6 +3,7 @@ import click
 import secrets
 import mysql.connector
 import re
+from objects.UserClass import User
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
@@ -38,9 +39,7 @@ def load_logged_in_user():
         query = 'SELECT id, username, groupid, email, token, tokentimestamp FROM user WHERE token = %s '
         row = cursor.execute(query, (authorized,)).fetchone()
         if row is not None:
-
-            g.user = row
-
+            g.user = User(row)
 
 
 # /auth/register
@@ -186,7 +185,7 @@ def login():
         elif not check_password_hash(row[1], password):
             #sjekk passord client side??
             #får feilmlding siden de dummydataen inneholder passord som ikke er hashet
-            error = "Password is incorrect" 
+            error = "Password is incorrect"
         else:
             # TODO: Security? secrets only generates a hex string of 490 chars with this
             uniqueToken = secrets.token_hex(245)

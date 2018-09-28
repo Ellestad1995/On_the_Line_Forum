@@ -35,10 +35,10 @@ def load_logged_in_user():
     else:
         cnx = get_db()
         cursor = cnx.cursor()
-        row = cursor.execute(
-        'SELECT id, username, groupid FROM user WHERE token = ? ', (authorized)
-        ).fetchone()
+        query = 'SELECT id, username, groupid, email, token, tokentimestamp FROM user WHERE token = %s '
+        row = cursor.execute(query, (authorized,)).fetchone()
         if row is not None:
+
             g.user = row
 
 

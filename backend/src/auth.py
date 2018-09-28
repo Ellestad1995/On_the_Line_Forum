@@ -100,11 +100,14 @@ def createUser():
         elif acceptTerms == False:
             error = "You must accept the terms"
 
-        db = get_db()
-        cnx = db.cursor()
+        cnx = get_db()
+        cursor = cnx.cursor()
 
-        cnx.execute('SELECT id FROM user WHERE username = %s', (username,))
-        if cnx.fetchone() is not None:
+        # Check for existing username and email
+        query = 'SELECT id FROM user WHERE username = %s OR email = %s'
+        cursor.execute(query, (username,email))
+
+        if cursor.fetchone() is not None:
             error = 'User {0} is already registered.'.format(username)
 
         if error is None:
@@ -113,16 +116,24 @@ def createUser():
             # Create the user
             # werkzeug.security.generate_password_hash(password, method='pbkdf2:sha256', salt_length=8)
             password_hash = generate_password_hash(password, method='pbkdf2:sha256', salt_length=10)
+            click.echo("error is None")
             try:
-                cnx.execute(
-                'INSERT INTO user (username, password) VALUES (%s, %s)', (username, password_hash))
-                db.commit()
-                return redirect(url_for('auth'))
+                click.echo("Try")
+                insert = ('INSERT INTO user'
+                        '(username, email, password)'
+                        'VALUES (%s, %s, %s)')
+                cursor.execute(insert,(username, email, password_hash))
+                newUser = cursor.lastrowid
+                cnx.commit()
+                return redirect(url_for('auth.login'))
             except mysql.connector.Error as err:
                 # TODO: Specific error handling
                 click.echo("Unknown error: {} ".format(err))
+            else:
+                click.echo("Something went wrong...")
 
     flash(error)
+    return redirect(url_for('auth.createUser'))
 
 # auth/
 # =======
@@ -135,8 +146,8 @@ def login():
     """
     if request.method == 'GET':
         return render_template('auth/login.html', title='login')
-        
-    
+
+
     elif request.method == 'POST':
         """
             Read form data
@@ -146,10 +157,12 @@ def login():
             Check if username exists
             Check if password is correct
             login :O
+
         """   
+
         username = request.form['username']
         password = request.form['secretPassword']
-    
+
         db = get_db()
         cnx = db.cursor()
 
@@ -175,7 +188,7 @@ def login():
             error = "Username/email or password is incorrect" 
         else:
             # TODO: Security? secrets only generates a hex string of 490 chars with this
-            uniqueToken = secrets.token_hex(245) 
+            uniqueToken = secrets.token_hex(245)
             try:
                 if boolMail:
                     cnx.execute(
@@ -191,7 +204,6 @@ def login():
 
             #redirect to a success page
             return redirect(url_for('/'))
-        
         flash(error)
         return redirect(url_for('auth.login'))
 
@@ -229,4 +241,5 @@ def isEmail(txt):
     if garbage is not None:
         return True
     return False
+
 

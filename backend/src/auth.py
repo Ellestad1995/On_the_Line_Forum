@@ -183,7 +183,7 @@ def login():
             error = "A password is required"
         elif row == None:
             error = "Username/email or password is incorrect"
-        elif not ckeck_password_hash(row[1], password):
+        elif not check_password_hash(row[1], password):
             #sjekk passord client side??
             #får feilmlding siden de dummydataen inneholder passord som ikke er hashet
             error = "Username/email or password is incorrect"

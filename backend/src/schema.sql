@@ -17,6 +17,7 @@ CREATE TABLE `user` (
   `groupid` int(5) NOT NULL,
   `token` varchar(500) NOT NULL,
   `tokentimestamp` varchar(50),
+  `email` varchar(100) NOT NULL,
   FOREIGN KEY (`groupid`) REFERENCES `usergroups`(`groupid`) ON DELETE CASCADE,
   PRIMARY KEY (`id`)
 );

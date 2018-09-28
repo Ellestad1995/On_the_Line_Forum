@@ -11,13 +11,11 @@ DB_NAME='onthelinedb'
 # create a new one.
 # Handles error for "access denied" and "unknown database"
 
-
-
 def get_db():
     if 'db' not in g:
         try:
             cnx = mysql.connector.connect(user='tom', password='jerry',
-                              host=os.environ['flask_db'],
+                              host=os.environ['FLASK_DB'],
                               database=DB_NAME)
             g.db = cnx
             click.echo("Returns new connection")

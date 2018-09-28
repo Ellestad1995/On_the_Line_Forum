@@ -17,6 +17,7 @@ RUN pip3 install -r /root/app/requirements.txt
 
 ENV FLASK_ENV="development"
 ENV FLASK_APP="/root/app"
+ENV FLASK_DB="db"
 
 CMD ["flask", "run", "--host=0.0.0.0"]
 

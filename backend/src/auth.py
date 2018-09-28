@@ -192,7 +192,7 @@ def login():
             try:
                 if boolMail:
                     cnx.execute(
-                            'UPDATE user set token %s WHERE email = %s', (uniqueToken, username,))
+                            'UPDATE user SET token = %s WHERE email = %s', (uniqueToken, username,))
                 elif not boolMail:
                     cnx.execute(
                             'UPDATE user SET token = %s WHERE username = %s', (uniqueToken, username,))

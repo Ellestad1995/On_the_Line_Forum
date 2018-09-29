@@ -30,17 +30,20 @@ def load_logged_in_user():
     If a user id is stored in the session, load the user object from
     the database into ``g.user``.
     """
+
     authorized = session.get('token')
     if authorized is None:
         g.user = None
     else:
         cnx = get_db()
-        cursor = cnx.cursor()
-        query = 'SELECT id, username, groupid, email, token, tokentimestamp FROM user WHERE token = %s '
+        cursor = cnx.cursor(dictionary=True)
+        query = 'SELECT id, username, groupid, email, tokentimestamp FROM user WHERE token = %s '
         row = cursor.execute(query, (authorized,)).fetchone()
         if row is not None:
             g.user = User(row)
-
+            #g.user.dump()
+        else:
+            click.echo("No user was found. Return to homepage")
 
 # /auth/register
 # ==========

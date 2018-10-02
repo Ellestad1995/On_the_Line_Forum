@@ -1,8 +1,13 @@
 # On_the_Line_Forum
 On the Line forum is a highly secure proposed way of handling an online forum. The code is kept at a minimum to only show how secure functions are setup and user functionality is kept at a minimum.
 
+
+## Usage with docker
+If you want to run this app in a docker enviroment, you can follow the guide on the [wiki](https://github.com/Ellestad1995/On_the_Line_Forum/wiki/Usage-with-docker-compose)<br>
+
 ## Project setup
 For reference: [Flask install guide](http://flask.pocoo.org/docs/1.0/installation/#installation)
+
 
 **Prerequisites:**
 * python3

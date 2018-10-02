@@ -17,7 +17,7 @@ bp = Blueprint('posts', __name__, url_prefix='/')
 def showthreads(threadid, categoryid):
     cnx = get_db()
     cursor = cnx.cursor()
-    results = cursor.execute("SELECT title, content, threadid FROM post WHERE threadid = %s", (threadid,))
+    results = cursor.execute("SELECT title, content, timestamp, threadid, username, p.id FROM post as p LEFT JOIN user ON userid=user.id WHERE threadid = %s", (threadid,))
     posts = cursor.fetchall() 
     click.echo(str(posts))
     return render_template("post/index.html", posts=posts, categoryid=categoryid, threadid=threadid)
@@ -39,5 +39,13 @@ def create_newpost(threadid, categoryid):
     return redirect("/"+categoryid+"/"+threadid+"/") 
 
 
-
+@bp.route('/delete/<postid>', methods=['POST'])
+def delete_post(postid):
+	#TODO: check if the user is verified 
+	click.echo("delete " + postid)
+	cnx=get_db()
+	cursor=cnx.cursor()
+	cursor.execute("DELETE FROM post WHERE id = %s", (postid,))
+	cnx.commit()
+	return redirect("/")
 

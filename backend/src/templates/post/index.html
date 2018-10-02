@@ -8,8 +8,11 @@
                 <p> {{ post.1 | e  }}</p>
            </div>
             <div style="flex:1; flex-basis:20%; background-color:#cccccc;" >
-                 <p style="flex:1">TIMESTAMP</p> 
-                 <p style="flex:1">USERNAME</p> <!-- INSERT DELETE BUTTON HERE -->
+                <p style="flex:1">{{ post.2 | e}}</p> 
+                <p style="flex:1">{{ post.4 | e }}</p> <!-- INSERT DELETE BUTTON HERE -->
+                <form action={{ url_for('posts.delete_post', postid=post.5) }} method=post>
+                    <input type=submit value=Delete>
+                </form>
            </div>
        </div>
      </div>

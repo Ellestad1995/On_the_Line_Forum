@@ -5,7 +5,7 @@ import mysql.connector
 import re
 from .objects.UserClass import User
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, session, url_for
+    Blueprint, flash, g, redirect, render_template, request, session, url_for, escape
 )
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -31,14 +31,16 @@ def load_logged_in_user():
     the database into ``g.user``.
     """
 
-    authorized = session.get('token')
+    authorized = session.get('access_token')
+    click.echo("What is wrong: {}".format(authorized))
     if authorized is None:
         g.user = None
     else:
         cnx = get_db()
         cursor = cnx.cursor(dictionary=True)
         query = 'SELECT id, username, groupid, email, tokentimestamp FROM user WHERE token = %s '
-        row = cursor.execute(query, (authorized,)).fetchone()
+        cursor.execute(query, (authorized,))
+        row = cursor.fetchone()
         if row is not None:
             g.user = User(row)
             #g.user.dump()
@@ -205,8 +207,10 @@ def login():
                 # TODO: Error handling
                 click.echo("Unknown error: {} ".format(err))
 
+            session['access_token'] = uniqueToken
+
             #redirect to a success page
-            return redirect(url_for('/'))
+            return redirect(url_for('categories.index'))
         flash(error)
         return redirect(url_for('auth.login'))
 

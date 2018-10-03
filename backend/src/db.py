@@ -16,7 +16,7 @@ def get_db():
         try:
             cnx = mysql.connector.connect(user='tom', password='jerry',
                               host=os.environ['FLASK_DB'],
-                              database=DB_NAME)
+                              database=DB_NAME,)
             g.db = cnx
             click.echo("Returns new connection")
             return g.db
@@ -47,7 +47,7 @@ def init_db():
     cursor = cnx.cursor()
     with current_app.open_resource('schema.sql') as f:
         try:
-            cursor.execute(f.read().decode('utf8'))
+            cursor.execute(f.read().decode('utf8'), multi=True)
         except mysql.connector.Error as err:
             click.echo("Failed creating database: {}".format(err))
             exit(1)

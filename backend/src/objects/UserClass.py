@@ -1,6 +1,5 @@
 import click
 class User():
-    username = "starlord"
     def __init__(self):
         """
         Creates empty User object. Probably not very useful

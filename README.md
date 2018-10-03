@@ -12,7 +12,7 @@ For reference: [Flask install guide](http://flask.pocoo.org/docs/1.0/installatio
 **Prerequisites:**
 * python3
 * pip3
-* FreeBSD,Unix/linux - ***If you are developing on windows you are on your own.***
+* FreeBSD,Unix/linux, Windows
 * python3-venv
 
 **Clone the project to your desired location**
@@ -27,8 +27,18 @@ For reference: [Flask install guide](http://flask.pocoo.org/docs/1.0/installatio
 
 * `source venv/bin/activate` - This is how you enable the virtual environment
 
+The windows way:
+
+* Goto the backend directory
+* `python -m venv venv`
+* `venv\Scripts\activate` -  This is how you enable the virtual environment
+
 **Install the required packages from requirements in the virtual environment**
 * pip3 install -r requirements.txt
+
+The windows way:
+
+* `pip install -r requirements.txt`
 
 This will install Flask and the required dependences and other packages.
 
@@ -47,8 +57,12 @@ Set the environment variables so Flask know that we are developing and so it kno
 
 * `export FLASK_DB=127.0.0.1` or `export FLASK_DB=db` if on docker.
 
+The windows way:
 
-You should initialize the database before you run the application to get all the necessary tables.(Currently we have not made the schema yet...So this will be pointless)
+* `(venv) E:\Bibliotek\Dokumenter\On_the_Line_Forum\backend>set FLASK_APP=src`
+* `(venv) E:\Bibliotek\Dokumenter\On_the_Line_Forum\backend>set FLASK_ENV=development`
+
+You should initialize the database before you run the application to get all the necessary tables.
 
 `flask init-db` - Don't do this before setting up the db. see next section.
 
@@ -77,7 +91,7 @@ If you now browse to `http://127.0.0.1:500/hello` you will se a dummy page. That
 * If you are on other UNIX environment see this guide:
 https://www.linode.com/docs/databases/mariadb/mariadb-setup-debian/
 
-And again: If you are on Windows, just install Debian or some UNIX system.
+* Windows users can check out this https://mariadb.com/kb/en/library/installing-mariadb-msi-packages-on-windows/
 
 ### Project specific setup:
 

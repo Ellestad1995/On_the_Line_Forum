@@ -232,7 +232,6 @@ def profile():
 
 # /auth/user/:userid/ DELETE
 # Delete a user
-# TODO: Implement this
 @bp.route('/user', methods=['DELETE'])
 def deleteUser():
     if request.method == 'DELETE':
@@ -241,14 +240,20 @@ def deleteUser():
 
         authorized = session.get('access_token')
         try:
-            if authorized is None:
+            if authorized is not None:
+                # Delete should happen from profile page, so thats how to get userID
                 cnx.execute('SELECT username FROM user WHERE token = %s', (authorized,))
                 row = cursor.fetchone()
                 username = row[0]
-                cnx.execute('DELETE FROM user WHERE username = %s', (username,))
-            #elif isAdmin():
+            elif g.user.isAdmin():
+                # TODO: how to get user id
+                username = 'temp'
+                
             else:
                 click.echo("Not authorized to delete")
+
+            if username is not None:
+                cnx.execute('DELETE FROM user WHERE username = %s', (username,))
             db.commit()
         except mysql.connector.Error as err:
             # TODO: specific error handling
@@ -256,10 +261,22 @@ def deleteUser():
 
 # /auth/user/logout
 # logout GET
-#@bp.route
-#def logout():
-#    if request.method == 'GET':
-        
+@bp.route
+def logout():
+    if request.method == 'GET':
+       db = get_db()
+       cnx = db.cursor()
+
+       authorized = session.get('access_token')
+
+       if authorized is not None:
+           # TODO: token needs a default value indicating not logged in user
+           cnx.execute('UPDATE user SET token %s WHERE token = %s', ('null', authorized,))
+       else:
+           click.echo('Not logged in').format(authorized)
+
+       db.commit()
+       return redirect(url_for('categories.index'))
 
 # /auth/user/:userid/ GET
 # GET

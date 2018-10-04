@@ -8,6 +8,7 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for, escape
 )
 from werkzeug.security import check_password_hash, generate_password_hash
+import itsdangerous
 
 # Obviously we need database access in functions here
 # the '.' represents this repo / this project. And we important the get_db function.
@@ -91,8 +92,8 @@ def createUser():
 
         if not email and isEmail(email) is False:
             error = "A valid email address is required"
-        elif not re.match(r'{10,}', password):
-            error = "Password need to have"
+        #elif not re.match(r'{10,}', password):
+        #    error = "Password need to have"
         elif not username:
             error = "A username is required"
         elif not password:
@@ -194,7 +195,7 @@ def login():
         else:
             # TODO: Security? secrets only generates a hex string of 490 chars with this
             #TODO: Use werkzeug token instead of secret
-            uniqueToken = secrets.token_hex(245)
+            uniqueToken = secrets.token_bytes(128)
             try:
                 if boolMail:
                     cnx.execute(

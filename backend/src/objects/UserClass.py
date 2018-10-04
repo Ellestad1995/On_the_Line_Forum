@@ -26,10 +26,23 @@ class User():
                 self.email = row["email"]
             if row["groupid"] is not None:
                 self.groupId = row["groupid"]
+                if self.groupId == 1000:
+                    self.isadmin = True
+                else:
+                    self.isadmin = False 
             if row["tokentimestamp"] is not None:
                 self.sessionTime = row["tokentimestamp"]
             else:
                 self.sessionTime = None
+
+
+
+    def isAdmin(self):
+        """
+        Used to check if a user i admin or not.
+        """
+        return self.isadmin
+
 
     def dumpInfo(self):
         """

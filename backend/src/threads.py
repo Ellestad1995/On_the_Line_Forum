@@ -1,7 +1,8 @@
 import functools
 import click
+from .objects.UserClass import User
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, session, url_for
+    Blueprint, flash, g, redirect, render_template, request, session, url_for, escape
 )
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -11,28 +12,62 @@ from .db import get_db
 
 bp = Blueprint('threads', __name__, url_prefix='/')
 
+# ========
+# Checking if the request is a logged in user
+# =========
+# Using the session object we can get read cookies sent over the network
+# If no cookie/token is found then the user is not logged in.
+#
+@bp.before_app_request
+def load_logged_in_user():
+    """
+    If a user id is stored in the session, load the user object from
+    the database into ``g.user``.
+    """
+
+    authorized = session.get('access_token')
+    click.echo("What is wrong: {}".format(authorized))
+    if authorized is None:
+        g.user = None
+    else:
+        cnx = get_db()
+        cursor = cnx.cursor(dictionary=True)
+        query = 'SELECT id, username, groupid, email, tokentimestamp FROM user WHERE token = %s '
+        cursor.execute(query, (authorized,))
+        row = cursor.fetchone()
+        if row is not None:
+            g.user = User(row)
+            #g.user.dump()
+        else:
+            g.user = None
+            click.echo("No user was found. Return to homepage")
+
 # /:categoryid
 @bp.route('/<categoryid>/', methods=['GET'])
 def showthreads(categoryid):
     cnx = get_db()
     cursor = cnx.cursor()
     results = cursor.execute("SELECT id, threadname FROM thread WHERE categoryid = %s", (categoryid,))
-    threads = cursor.fetchall()	
+    threads = cursor.fetchall()
     click.echo(str(threads))
-    return render_template("thread/index.html", threads=threads)
+    return render_template("thread/index.html", categoryid=categoryid, threads=threads)
 
-# /:categories/r/:threadid/
-# =========
-# Show posts in a thread
-# =========
-# GET requests shows all posts and their information in that thread
-
-@bp.route('/threadid', methods=['GET'])
-def showPosts():
-        cnx = get_db()
-        cursor = cnx.cursor()
-        results = cursor.execute("SELECT * FROM post WHERE threadid = %s", (threadid,))
-        posts = cursor.fetchall()
-        click.echo(str(posts))
-        return render_template("post/index.html", posts=posts)
-
+@bp.route('/<categoryid>/', methods=['POST'])
+def create_newthread(categoryid):
+    if g.user is not None:
+        title=request.form['title']
+        content=request.form['content']
+        click.echo(title + content)
+        if title and content:
+            cnx=get_db()
+            cursor=cnx.cursor()
+            timestamp=format(datetime.datetime.now())
+            cursor.execute("INSERT INTO `thread` (`threadname`) VALUES (%s)", (title))
+            cnx.commit()
+            threadid=cursor.lastrowid
+            cursor.execute("INSERT INTO `post` (`title`, `content`, `timestamp`, `userid`, `threadid`) VALUES (%s, %s, %s, %s, %s)", (title,content,timestamp,g.user,threadid))
+            cnx.commit()
+            click.echo("Succesful so far")
+        return redirect("/"+categoryid+"/"+threadid+"/")
+    else:
+        click.echo("Log in to post a new thread.")

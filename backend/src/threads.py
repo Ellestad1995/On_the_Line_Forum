@@ -21,3 +21,18 @@ def showthreads(categoryid):
     click.echo(str(threads))
     return render_template("thread/index.html", threads=threads)
 
+# /:categories/r/:threadid/
+# =========
+# Show posts in a thread
+# =========
+# GET requests shows all posts and their information in that thread
+
+@bp.route('/threadid', methods=['GET'])
+def showPosts():
+        cnx = get_db()
+        cursor = cnx.cursor()
+        results = cursor.execute("SELECT * FROM post WHERE threadid = %s", (threadid,))
+        posts = cursor.fetchall()
+        click.echo(str(posts))
+        return render_template("post/index.html", posts=posts)
+

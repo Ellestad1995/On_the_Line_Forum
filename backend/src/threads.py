@@ -1,5 +1,6 @@
 import functools
 import click
+import datetime
 from .objects.UserClass import User
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for, escape
@@ -62,12 +63,12 @@ def create_newthread(categoryid):
             cnx=get_db()
             cursor=cnx.cursor()
             timestamp=format(datetime.datetime.now())
-            cursor.execute("INSERT INTO `thread` (`threadname`) VALUES (%s)", (title))
+            cursor.execute("INSERT INTO `thread` (`threadname`, `categoryid`) VALUES (%s, %s)", (title, categoryid))
             cnx.commit()
             threadid=cursor.lastrowid
-            cursor.execute("INSERT INTO `post` (`title`, `content`, `timestamp`, `userid`, `threadid`) VALUES (%s, %s, %s, %s, %s)", (title,content,timestamp,g.user,threadid))
+            cursor.execute("INSERT INTO `post` (`title`, `content`, `timestamp`, `userid`, `threadid`) VALUES (%s, %s, %s, %s, %s)", (title,content,timestamp,g.user.id,threadid))
             cnx.commit()
             click.echo("Succesful so far")
-        return redirect("/"+categoryid+"/"+threadid+"/")
+        return redirect("/"+categoryid+"/"+str(threadid)+"/")
     else:
         click.echo("Log in to post a new thread.")

@@ -47,7 +47,7 @@ def init_db():
     cursor = cnx.cursor()
     with current_app.open_resource('schema.sql') as f:
         try:
-            cursor.execute(f.read().decode('utf8'), multi=True)
+            cursor.execute(f.read().decode('utf8'))
         except mysql.connector.Error as err:
             click.echo("Failed creating database: {}".format(err))
             exit(1)

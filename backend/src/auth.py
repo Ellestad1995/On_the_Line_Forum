@@ -1,6 +1,5 @@
 import functools
 import click
-import secrets
 import mysql.connector
 import re
 from .objects.UserClass import User
@@ -88,8 +87,12 @@ def createUser():
         acceptTerms = request.form['acceptTerms']
         #click.echo("User gave us: `{}`".format([email,username,password,acceptTerms]))
         error = None
+
         if not email and isEmail(email) is False:
             error = "A valid email address is required"
+        #TODO: do this check client side
+        elif not re.match(r'{10,}', password):
+            error = "Password need to have"
         elif not username:
             error = "A username is required"
         elif not password:
@@ -98,7 +101,6 @@ def createUser():
             error = "We need you to type your password again"
         elif not password == verifyPassword:
             error = "Your passwords doesn't match"
-            # TODO: Make this check client side.
         elif not acceptTerms:
             error = "We need you to accept the terms"
         elif acceptTerms == False:
@@ -188,12 +190,11 @@ def login():
         elif row == None:
             error = "Username/email or password is incorrect"
         elif not check_password_hash(row[1], password):
-            #sjekk passord client side??
-            #får feilmlding siden de dummydataen inneholder passord som ikke er hashet
             error = "Password is incorrect"
         else:
             # TODO: Security? secrets only generates a hex string of 490 chars with this
-            uniqueToken = secrets.token_hex(245)
+            #TODO: Use werkzeug token instead of secret
+            #uniqueToken = secrets.token_hex(245)
             try:
                 if boolMail:
                     cnx.execute(
@@ -223,14 +224,8 @@ def profile():
     if request.method == 'GET':
         return render_template('base.html')
 
-# /auth/user POST
-# Post request for creating a new user
-# TODO: Implement this
 
-
-
-
-# /auth/user DELETE
+# /auth/user/:userid/ DELETE
 # Delete a user
 # TODO: Implement this
 #@bp.route('/user', methods=['DELETE'])
@@ -241,6 +236,7 @@ def profile():
 # /auth/user/:userid/ GET
 # GET
 # TODO: Implement this
+
 
 # Checks if provided string is an email
 def isEmail(txt):

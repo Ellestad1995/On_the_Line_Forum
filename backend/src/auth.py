@@ -2,6 +2,7 @@ import functools
 import click
 import mysql.connector
 import re
+import secrets
 from .objects.UserClass import User
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for, escape
@@ -90,7 +91,6 @@ def createUser():
 
         if not email and isEmail(email) is False:
             error = "A valid email address is required"
-        #TODO: do this check client side
         elif not re.match(r'{10,}', password):
             error = "Password need to have"
         elif not username:
@@ -194,7 +194,7 @@ def login():
         else:
             # TODO: Security? secrets only generates a hex string of 490 chars with this
             #TODO: Use werkzeug token instead of secret
-            #uniqueToken = secrets.token_hex(245)
+            uniqueToken = secrets.token_hex(245)
             try:
                 if boolMail:
                     cnx.execute(
@@ -229,8 +229,25 @@ def profile():
 # Delete a user
 # TODO: Implement this
 #@bp.route('/user', methods=['DELETE'])
-#def deleteUser():
+def deleteUser():
+    if request.method == 'DELETE':
+        db = get_db()
+        cnx = db.cursor()
 
+        authorized = session.get('access_token')
+        try:
+            if authorized is None:
+                cnx.execute('SELECT username FROM user WHERE token = %s', (authorized,))
+                row = cursor.fetchone()
+                username = row[0]
+                cnx.execute('DELETE FROM user WHERE username = %s', (username,))
+            #elif om det er admin
+            else:
+                click.echo("Not authorized to delete")
+            db.commit()
+        except mysql.connector.Error as err:
+            # TODO: specific error handling
+            click.echo("YO YO YO: {}".format(err))
 
 
 # /auth/user/:userid/ GET

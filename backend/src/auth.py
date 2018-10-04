@@ -46,6 +46,7 @@ def load_logged_in_user():
             g.user = User(row)
             #g.user.dump()
         else:
+            g.user = None
             click.echo("No user was found. Return to homepage")
 
 # /auth/register
@@ -92,8 +93,8 @@ def createUser():
 
         if not email and isEmail(email) is False:
             error = "A valid email address is required"
-        #elif not re.match(r'{10,}', password):
-        #    error = "Password need to have"
+        elif not re.match(r'.{10,}', password):
+            error = "Password needs to be 10 or longer"
         elif not username:
             error = "A username is required"
         elif not password:
@@ -153,7 +154,11 @@ def login():
     render a sign in page
     """
     if request.method == 'GET':
-        return render_template('auth/login.html', title='login')
+        
+        if g.user is None:
+            return render_template('auth/login.html', title='login')
+        else:
+            return redirect(url_for('categories.index'))
 
 
     elif request.method == 'POST':
@@ -192,10 +197,9 @@ def login():
             error = "Username/email or password is incorrect"
         elif not check_password_hash(row[1], password):
             error = "Password is incorrect"
-        else:
-            # TODO: Security? secrets only generates a hex string of 490 chars with this
-            #TODO: Use werkzeug token instead of secret
-            uniqueToken = secrets.token_bytes(128)
+        else: 
+            uniqueToken = secrets.token_hex(128)
+            #uniqueToken = TimestampSigner(randomString)
             try:
                 if boolMail:
                     cnx.execute(
@@ -229,7 +233,7 @@ def profile():
 # /auth/user/:userid/ DELETE
 # Delete a user
 # TODO: Implement this
-#@bp.route('/user', methods=['DELETE'])
+@bp.route('/user', methods=['DELETE'])
 def deleteUser():
     if request.method == 'DELETE':
         db = get_db()
@@ -242,7 +246,7 @@ def deleteUser():
                 row = cursor.fetchone()
                 username = row[0]
                 cnx.execute('DELETE FROM user WHERE username = %s', (username,))
-            #elif om det er admin
+            #elif isAdmin():
             else:
                 click.echo("Not authorized to delete")
             db.commit()
@@ -250,6 +254,12 @@ def deleteUser():
             # TODO: specific error handling
             click.echo("YO YO YO: {}".format(err))
 
+# /auth/user/logout
+# logout GET
+#@bp.route
+#def logout():
+#    if request.method == 'GET':
+        
 
 # /auth/user/:userid/ GET
 # GET

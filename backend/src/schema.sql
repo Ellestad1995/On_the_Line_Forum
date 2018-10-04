@@ -2,8 +2,8 @@ CREATE DATABASE IF NOT EXISTS `onthelinedb`;
 
 USE `onthelinedb`;
 
-DROP TABLE IF EXISTS `group`;
-CREATE TABLE `group` (
+DROP TABLE IF EXISTS `usergroups`;
+CREATE TABLE `usergroups` (
   `groupid` int(5) NOT NULL,
   `groupname` varchar(20) NOT NULL,
   PRIMARY KEY (`groupid`)
@@ -14,9 +14,11 @@ CREATE TABLE `user` (
   `id` int NOT NULL AUTO_INCREMENT,
   `username` varchar(20) NOT NULL,
   `password` varchar(300) NOT NULL,
-  `groupid` int(5) NOT NULL,
-  `token` varchar(500) NOT NULL,
-  FOREIGN KEY (`groupid`) REFERENCES `group`(`groupid`) ON DELETE CASCADE,
+  `groupid` int(5) NOT NULL DEFAULT 6969,
+  `token` varchar(500),
+  `tokentimestamp` DATETIME,
+  `email` varchar(100) NOT NULL,
+  FOREIGN KEY (`groupid`) REFERENCES `usergroups`(`groupid`) ON DELETE CASCADE,
   PRIMARY KEY (`id`)
 );
 
@@ -39,16 +41,12 @@ CREATE TABLE `thread` (
 DROP TABLE IF EXISTS `post`;
 CREATE TABLE `post` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `title` varchar(30) NOT NULL,
+  `title` varchar(500) NOT NULL,
   `content` text NOT NULL,
-  `timestamp` varchar(50) NOT NULL,
+  `timestamp` varchar(500) NOT NULL,
   `userid` int NOT NULL,
   `threadid` int NOT NULL,
   FOREIGN KEY (`userid`) REFERENCES `user` (`id`) ON DELETE CASCADE,
   FOREIGN KEY (`threadid`) REFERENCES `thread` (`id`) ON DELETE CASCADE,
   PRIMARY KEY (`id`)
 );
-INSERT INTO `thread` (`threadname`, `categoryid`) VALUES ("Trump", "1"), ("Obama", "1"), ("Red-team", "2"), ("Blue team", "2");
-INSERT INTO `category` (`displayname`) VALUES ("Politics"), ("Haking"), ("Cars"), ("Raid");
-INSERT INTO `group` VALUES (1000, "admin"), (6969, "user");
-INSERT INTO `user` (`username`, `password`, `salt`, `groupid`) VALUES ("AdminUser", "tmppassword", "2FGJM6GSDS", 1000);

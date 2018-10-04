@@ -1,7 +1,11 @@
 import functools
 import click
+import secrets
+import mysql.connector
+import re
+from .objects.UserClass import User
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, session, url_for
+    Blueprint, flash, g, redirect, render_template, request, session, url_for, escape
 )
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -26,19 +30,22 @@ def load_logged_in_user():
     If a user id is stored in the session, load the user object from
     the database into ``g.user``.
     """
-    authorized = session.get('token')
+
+    authorized = session.get('access_token')
+    click.echo("What is wrong: {}".format(authorized))
     if authorized is None:
         g.user = None
     else:
         cnx = get_db()
-        cursor = cnx.cursor()
-        row = cursor.execute(
-        'SELECT id, username, groupid FROM user WHERE token = ? ', (authorized)
-        ).fetchone()
+        cursor = cnx.cursor(dictionary=True)
+        query = 'SELECT id, username, groupid, email, tokentimestamp FROM user WHERE token = %s '
+        cursor.execute(query, (authorized,))
+        row = cursor.fetchone()
         if row is not None:
-            g.user = user
-
-
+            g.user = User(row)
+            #g.user.dump()
+        else:
+            click.echo("No user was found. Return to homepage")
 
 # /auth/register
 # ==========
@@ -81,8 +88,8 @@ def createUser():
         acceptTerms = request.form['acceptTerms']
         #click.echo("User gave us: `{}`".format([email,username,password,acceptTerms]))
         error = None
-        if not email:
-            error = "An email address is required"
+        if not email and isEmail(email) is False:
+            error = "A valid email address is required"
         elif not username:
             error = "A username is required"
         elif not password:
@@ -90,19 +97,21 @@ def createUser():
         elif not verifyPassword:
             error = "We need you to type your password again"
         elif not password == verifyPassword:
-            error = "Your passwords doesn't math"
+            error = "Your passwords doesn't match"
             # TODO: Make this check client side.
         elif not acceptTerms:
             error = "We need you to accept the terms"
         elif acceptTerms == False:
             error = "You must accept the terms"
 
-        db = get_db()
-        cnx = db.cursor()
+        cnx = get_db()
+        cursor = cnx.cursor()
 
-        if cnx.execute(
-        'SELECT id FROM user WHERE email = ?', (username,)
-        ).fetchone() is not None:
+        # Check for existing username and email
+        query = 'SELECT id FROM user WHERE username = %s OR email = %s'
+        cursor.execute(query, (username,email))
+
+        if cursor.fetchone() is not None:
             error = 'User {0} is already registered.'.format(username)
 
         if error is None:
@@ -110,17 +119,26 @@ def createUser():
             # Its all good
             # Create the user
             # werkzeug.security.generate_password_hash(password, method='pbkdf2:sha256', salt_length=8)
-            password_hash = generate_password_hash(password, mathod='pbkdf2:sha256', salt_length=10)
+            password_hash = generate_password_hash(password, method='pbkdf2:sha256', salt_length=10)
+            click.echo("error is None")
             try:
-                cnx.execute(
-                'INSERT INTO user (username, password) VALUES (?,?,?)', (username, password_hash))
+                click.echo("Try")
+                insert = ('INSERT INTO user'
+                        '(username, email, password)'
+                        'VALUES (%s, %s, %s)')
+                cursor.execute(insert,(username, email, password_hash))
+                newUser = cursor.lastrowid
                 cnx.commit()
-                return redirect(url_for('auth'))
+                return redirect(url_for('auth.login'))
             except mysql.connector.Error as err:
                 # TODO: Specific error handling
                 click.echo("Unknown error: {} ".format(err))
+                error = "Something went wrong"
+            else:
+                click.echo("Something went wrong...")
 
     flash(error)
+    return redirect(url_for('auth.createUser'))
 
 # auth/
 # =======
@@ -129,11 +147,72 @@ def createUser():
 @bp.route('/', methods=['GET', 'POST'])
 def login():
     """
-
+    render a sign in page
     """
     if request.method == 'GET':
-        return render_template('base.html')
+        return render_template('auth/login.html', title='login')
 
+
+    elif request.method == 'POST':
+        """
+            Read form data
+            Check username presence
+            Check email presence
+            Check password presence
+            Check if username exists
+            Check if password is correct
+            login :O
+
+        """
+
+        username = request.form['username']
+        password = request.form['secretPassword']
+
+        db = get_db()
+        cnx = db.cursor()
+
+        boolMail = isEmail(username)
+        if boolMail:
+            cnx.execute(
+                    "SELECT email, password FROM user WHERE email = %s", (username,))
+        elif not boolMail:
+            cnx.execute(
+                    "SELECT username, password FROM user WHERE username = %s", (username,))
+
+        row = cnx.fetchone()
+        error = None
+        if not username:
+            error = "A username/email is required"
+        elif not password:
+            error = "A password is required"
+        elif row == None:
+            error = "Username/email or password is incorrect"
+        elif not check_password_hash(row[1], password):
+            #sjekk passord client side??
+            #får feilmlding siden de dummydataen inneholder passord som ikke er hashet
+            error = "Password is incorrect"
+        else:
+            # TODO: Security? secrets only generates a hex string of 490 chars with this
+            uniqueToken = secrets.token_hex(245)
+            try:
+                if boolMail:
+                    cnx.execute(
+                            'UPDATE user SET token = %s WHERE email = %s', (uniqueToken, username,))
+                elif not boolMail:
+                    cnx.execute(
+                            'UPDATE user SET token = %s WHERE username = %s', (uniqueToken, username,))
+                db.commit()
+
+            except mysql.connector.Error as err:
+                # TODO: Error handling
+                click.echo("Unknown error: {} ".format(err))
+
+            session['access_token'] = uniqueToken
+
+            #redirect to a success page
+            return redirect(url_for('categories.index'))
+        flash(error)
+        return redirect(url_for('auth.login'))
 
 
 @bp.route('/profile', methods=['GET'])
@@ -149,10 +228,23 @@ def profile():
 # TODO: Implement this
 
 
+
+
 # /auth/user DELETE
 # Delete a user
 # TODO: Implement this
+#@bp.route('/user', methods=['DELETE'])
+#def deleteUser():
+
+
 
 # /auth/user/:userid/ GET
 # GET
 # TODO: Implement this
+
+# Checks if provided string is an email
+def isEmail(txt):
+    garbage = re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", txt)
+    if garbage is not None:
+        return True
+    return False

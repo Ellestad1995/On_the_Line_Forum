@@ -12,7 +12,7 @@ from .db import get_db
 bp = Blueprint('threads', __name__, url_prefix='/')
 
 # /:categoryid
-@bp.route('/<categoryid>', methods=['GET'])
+@bp.route('/<categoryid>/', methods=['GET'])
 def showthreads(categoryid):
     cnx = get_db()
     cursor = cnx.cursor()

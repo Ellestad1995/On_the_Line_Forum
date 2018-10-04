@@ -12,7 +12,7 @@
     </div>
   </div>
   <div class="form-group">
-    <label for="secretPassowrd">Password</label>
+    <label for="secretPassword">Password</label>
     <input type="password" name="secretPassword" class="form-control" id="secretPassword" placeholder="Password" required>
     <input type="password" name="verifySecretPassword" class="form-control" id="verifySecretPassword" placeholder="Password" required>
   </div>
@@ -22,4 +22,13 @@
   </div>
   <button type="submit" class="btn btn-primary">Get me On the Line</button>
 </form>
+{% with messages = get_flashed_messages() %}
+	{% if messages %}
+		<ul>
+			{% for message in messages %}
+			<b style="color:red"> {{ message | e }}</b>
+			{% endfor %}
+		</ul>
+	{% endif %}
+{% endwith %}
 {% endblock%}

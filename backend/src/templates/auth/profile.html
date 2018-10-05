@@ -9,6 +9,8 @@
   <a href="#"><i class="fa fa-twitter"></i></a>
   <a href="#"><i class="fa fa-linkedin"></i></a>
   <a href="#"><i class="fa fa-facebook"></i></a>
-  <p><button type="button" class="btn btn-danger" formmethod="DELETE" formaction="{{url_for('auth.deleteUser', userid=g.user.id)}}">Delete my account</button></p>
+  <form action={{ url_for('auth.deleteUser', userid=g.user.id) }} method=post>
+	  <button type=submit class="btn btn-danger">Delete my account</button>
+  </form>
 </div>
 {% endblock%}

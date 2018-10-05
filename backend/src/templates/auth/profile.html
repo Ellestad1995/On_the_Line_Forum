@@ -1,6 +1,14 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="form-group">
-<p>tempUser</p>
+<div class="card">
+  <img src="{{url_for('static', 'anon_has_fb.jpg')}}" alt="John" style="width:100%">
+  <h1>{{g.user.username}}</h1>
+  <p class="title">CEO & Founder, Anonymous</p>
+  <p>Harvard University</p>
+  <a href="#"><i class="fa fa-dribbble"></i></a>
+  <a href="#"><i class="fa fa-twitter"></i></a>
+  <a href="#"><i class="fa fa-linkedin"></i></a>
+  <a href="#"><i class="fa fa-facebook"></i></a>
+  <p><button type="button" class="btn btn-danger" formmethod="DELETE" formaction="{{url_for('auth.deleteUser', userid=g.user.id)}}">Delete my account</button></p>
 </div>
 {% endblock%}

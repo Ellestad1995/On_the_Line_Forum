@@ -10,7 +10,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 # the '.' represents __init__.py / this project. And we important the get_db function.
 from .db import get_db
 
-bp = Blueprint('posts', __name__, url_prefix='/')
+bp = Blueprint('posts', __name__, url_prefix='/post')
 
 # /:categoryid
 @bp.route('/<categoryid>/<threadid>/', methods=['GET'])

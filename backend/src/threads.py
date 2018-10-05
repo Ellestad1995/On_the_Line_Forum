@@ -11,7 +11,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 # the '.' represents __init__.py / this project. And we important the get_db function.
 from .db import get_db
 
-bp = Blueprint('threads', __name__, url_prefix='/')
+bp = Blueprint('threads', __name__, url_prefix='/post')
 
 # ========
 # Checking if the request is a logged in user

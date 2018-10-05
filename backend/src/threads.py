@@ -1,5 +1,6 @@
 import functools
 import click
+import datetime
 from .objects.UserClass import User
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for, escape
@@ -10,7 +11,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 # the '.' represents __init__.py / this project. And we important the get_db function.
 from .db import get_db
 
-bp = Blueprint('threads', __name__, url_prefix='/')
+bp = Blueprint('threads', __name__, url_prefix='/post')
 
 # ========
 # Checking if the request is a logged in user
@@ -52,22 +53,42 @@ def showthreads(categoryid):
     click.echo(str(threads))
     return render_template("thread/index.html", categoryid=categoryid, threads=threads)
 
+# ========
+# Posting a new thrad
+# =========
+# Gets title and content from the user and posts a new thread with the title,
+# The content of the thread will be put in the first post.
+#
 @bp.route('/<categoryid>/', methods=['POST'])
 def create_newthread(categoryid):
     if g.user is not None:
-        title=request.form['title']
-        content=request.form['content']
+        title=str(escape(request.form['title']))
+        content=str(escape(request.form['content']))
         click.echo(title + content)
         if title and content:
             cnx=get_db()
             cursor=cnx.cursor()
             timestamp=format(datetime.datetime.now())
-            cursor.execute("INSERT INTO `thread` (`threadname`) VALUES (%s)", (title))
+            cursor.execute("INSERT INTO `thread` (`threadname`, `categoryid`) VALUES (%s, %s)", (title, categoryid))
             cnx.commit()
             threadid=cursor.lastrowid
-            cursor.execute("INSERT INTO `post` (`title`, `content`, `timestamp`, `userid`, `threadid`) VALUES (%s, %s, %s, %s, %s)", (title,content,timestamp,g.user,threadid))
+            cursor.execute("INSERT INTO `post` (`title`, `content`, `timestamp`, `userid`, `threadid`) VALUES (%s, %s, %s, %s, %s)", (title,content,timestamp,g.user.id,threadid))
             cnx.commit()
-            click.echo("Succesful so far")
-        return redirect("/"+categoryid+"/"+threadid+"/")
+        return redirect("/"+categoryid+"/"+str(threadid)+"/")
     else:
         click.echo("Log in to post a new thread.")
+
+@bp.route('/delete/<threadid>', methods=['POST'])
+def deleteThread(threadid):
+    cnx=get_db()
+    cursor=cnx.cursor()
+    if g.user.isAdmin:
+        cursor.execute("DELETE FROM post WHERE threadid = %s", (threadid))
+        cnx.commit()
+        cursor.execute("DELETE FROM thread WHERE id = %s", (threadid))
+        cnx.commit()
+        return redirect("/")
+    elif g.user is not None:
+        cursor.execute("DELETE FROM post WHERE threadid = %s, id = %s", (threadid, g.user.id))
+        cnx.commit()
+        return redirect("/")

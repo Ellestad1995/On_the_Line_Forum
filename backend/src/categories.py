@@ -45,9 +45,11 @@ def index():
     cursor.execute("select id, displayname FROM category")
     categories = cursor.fetchall()
     #TODO: check to see if current user is admin, and pass it as a paramter to the template
-    adminuser = True
+    try:
+        adminuser = g.user.isAdmin()
+    except:
+        adminuser = False
     return render_template('category/index.html', categories=categories, adminuser=adminuser)
-
 
 @bp.route('', methods=['POST'])
 def add_entry():

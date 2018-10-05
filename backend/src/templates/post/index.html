@@ -10,9 +10,11 @@
             <div style="flex:1; flex-basis:20%; background-color:#cccccc;" >
                 <p style="flex:1">{{ post.2 | e}}</p> 
                 <p style="flex:1">{{ post.4 | e }}</p> <!-- INSERT DELETE BUTTON HERE -->
-                <form action={{ url_for('posts.delete_post', postid=post.5) }} method=post>
-                    <input type=submit value=Delete>
-                </form>
+             	{% if g.user.id == post.6  %}
+			<form action={{ url_for('posts.delete_post', postid=post.5) }} method=post>
+                    		<input type=submit value=Delete>
+                	</form>
+	      	{% endif  %}
            </div>
        </div>
      </div>
@@ -22,6 +24,7 @@
   {% endfor %}
 <div style="clear:both"></div>
 <!-- If the user is authenicated: display this block of code -->
+{% if g.user %}
 <h2> Create new post </h2>
 <div>
   <form action={{ url_for('posts.create_newpost', threadid=threadid, categoryid=categoryid) }} method="POST">
@@ -38,4 +41,5 @@
     </div>
   </form>
 </div>
+{% endif %}
 {% endblock %}

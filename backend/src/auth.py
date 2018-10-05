@@ -227,28 +227,21 @@ def profile():
     Display a users information
     """
     if request.method == 'GET':
-        return render_template('base.html')
+        if g.user is not None:
+            return render_template('base.html')
 
 
 # /auth/user/:userid/ DELETE
 # Delete a user
 @bp.route('/user', methods=['DELETE'])
-def deleteUser():
+def deleteUser(userStr):
     if request.method == 'DELETE':
         db = get_db()
         cnx = db.cursor()
 
-        authorized = session.get('access_token')
         try:
-            if authorized is not None:
-                # Delete should happen from profile page, so thats how to get userID
-                cnx.execute('SELECT username FROM user WHERE token = %s', (authorized,))
-                row = cursor.fetchone()
-                username = row[0]
-            elif g.user.isAdmin():
-                # TODO: how to get user id
-                username = 'temp'
-                
+            if g.user.username is userStr or g.user.isAdmin():
+                username = userStr
             else:
                 click.echo("Not authorized to delete")
 
@@ -267,9 +260,7 @@ def logout():
        db = get_db()
        cnx = db.cursor()
 
-       authorized = session.get('access_token')
-
-       if authorized is not None:
+       if g.user is not None:
            # TODO: token needs a default value indicating not logged in user
            cnx.execute('UPDATE user SET token %s WHERE token = %s', ('null', authorized,))
        else:
@@ -277,11 +268,6 @@ def logout():
 
        db.commit()
        return redirect(url_for('categories.index'))
-
-# /auth/user/:userid/ GET
-# GET
-# TODO: Implement this
-
 
 # Checks if provided string is an email
 def isEmail(txt):

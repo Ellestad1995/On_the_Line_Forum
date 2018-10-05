@@ -6,6 +6,11 @@
         <div>
           <h2>
               <a href={{ thread.0 }}/ style="color:#202020" >{{ thread.1 | e }}</a>
+              <p align="right"
+                <form action={{ url_for('threads.deleteThread', threadid=thread.5) }} method=thread>
+                    <input type=submit value=Delete>
+                </form>
+            </p>
           </h2>
         </div>
     </article>

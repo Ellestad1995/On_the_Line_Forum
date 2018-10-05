@@ -34,7 +34,7 @@ def create_newpost(threadid, categoryid):
         userid=g.user.id
         cursor.execute("INSERT INTO `post` (`title`, `content`, `timestamp`, `userid`, `threadid`) VALUES (%s, %s, %s, %s, %s)", (title,content,timestamp,userid,int(threadid)))
         cnx.commit()
-    return redirect("/"+categoryid+"/"+threadid+"/") 
+    return redirect("/post/"+categoryid+"/"+threadid+"/") 
 
 
 @bp.route('/delete/<postid>', methods=['POST'])

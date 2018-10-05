@@ -154,7 +154,7 @@ def login():
     render a sign in page
     """
     if request.method == 'GET':
-        
+
         if g.user is None:
             return render_template('auth/login.html', title='login')
         else:
@@ -197,7 +197,7 @@ def login():
             error = "Username/email or password is incorrect"
         elif not check_password_hash(row[1], password):
             error = "Password is incorrect"
-        else: 
+        else:
             uniqueToken = secrets.token_hex(128)
             #uniqueToken = TimestampSigner(randomString)
             try:
@@ -228,8 +228,9 @@ def profile():
     """
     if request.method == 'GET':
         if g.user is not None:
-            return render_template('base.html')
-
+            return render_template('auth/profile.html', title='Profile')
+        else:
+            redirect(url_for('auth.login'))
 
 # /auth/user/:userid/ DELETE
 # Delete a user

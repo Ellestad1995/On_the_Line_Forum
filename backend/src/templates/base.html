@@ -27,6 +27,7 @@
       <li class="nav-item">
         {% if g.user %}
         <a class="nav-link" href="{{url_for('auth.profile')}}">{{g.user.username}}</a>
+        <a class="nav-link" href="{{url_for('auth.logout')}}">Logout</a>
          {% else %}
          <a class="nav-link" href="{{ url_for('auth.login') }}">Login</a>
          {% endif %}

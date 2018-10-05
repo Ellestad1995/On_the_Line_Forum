@@ -11,7 +11,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 # the '.' represents __init__.py / this project. And we important the get_db function.
 from .db import get_db
 
-bp = Blueprint('threads', __name__, url_prefix='/post')
+bp = Blueprint('threads', __name__, url_prefix='/thread')
 
 # ========
 # Checking if the request is a logged in user
@@ -54,7 +54,7 @@ def showthreads(categoryid):
     return render_template("thread/index.html", categoryid=categoryid, threads=threads)
 
 # ========
-# Posting a new thrad
+# Posting a new thread
 # =========
 # Gets title and content from the user and posts a new thread with the title,
 # The content of the thread will be put in the first post.
@@ -74,21 +74,27 @@ def create_newthread(categoryid):
             threadid=cursor.lastrowid
             cursor.execute("INSERT INTO `post` (`title`, `content`, `timestamp`, `userid`, `threadid`) VALUES (%s, %s, %s, %s, %s)", (title,content,timestamp,g.user.id,threadid))
             cnx.commit()
-        return redirect("/"+categoryid+"/"+str(threadid)+"/")
+        return redirect("/thread/"+categoryid+"/"+str(threadid)+"/")
     else:
         click.echo("Log in to post a new thread.")
 
+# ========
+# Deleting a thread or all threads by a user in a thread
+# =========
+# Deletes entire thread if admin,
+# Deletes all posts by that particular user if regular user
+#
 @bp.route('/delete/<threadid>', methods=['POST'])
 def deleteThread(threadid):
     cnx=get_db()
     cursor=cnx.cursor()
-    if g.user.isAdmin:
-        cursor.execute("DELETE FROM post WHERE threadid = %s", (threadid))
+    if g.user.isAdmin():
+        cursor.execute("DELETE FROM post WHERE threadid = %s", (threadid,))
         cnx.commit()
-        cursor.execute("DELETE FROM thread WHERE id = %s", (threadid))
+        cursor.execute("DELETE FROM thread WHERE id = %s", (threadid,))
         cnx.commit()
         return redirect("/")
     elif g.user is not None:
-        cursor.execute("DELETE FROM post WHERE threadid = %s, id = %s", (threadid, g.user.id))
+        cursor.execute("DELETE FROM post WHERE threadid = %s AND userid = %s", (threadid, g.user.id,))
         cnx.commit()
         return redirect("/")

@@ -5,9 +5,9 @@
     <article class="thread" style="background-color:#E5E5E5">
         <div>
           <h2>
-              <a href={{ thread.0 }}/ style="color:#202020" >{{ thread.1 | e }}</a>
-              <p align="right"
-                <form action={{ url_for('threads.deleteThread', threadid=thread.0) }} method=thread>
+              <a href=/post/{{ categoryid }}/{{ thread.0 }}/ style="color:#202020" >{{ thread.1 | e }}</a>
+              <p align="right">
+                <form action="{{ url_for('threads.deleteThread', threadid=thread.0) }}" method="POST">
                     <input type=submit value=Delete>
                 </form>
             </p>

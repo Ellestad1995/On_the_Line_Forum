@@ -1,5 +1,5 @@
 import os
-
+import datetime
 from flask import Flask
 
 from .db import get_db
@@ -41,4 +41,8 @@ def create_app(test_config=None):
     # The index page redirects to categories index()
     app.add_url_rule('/', endpoint='categories.index')
 
+    # Gives the cookie a lifetime
+    app.config['PERMANENT_SESSION_LIFETIME'] = datetime.timedelta(minutes=30)
+    #app.config['SESSION_COOKIE_HTTPONLY'] = False
+    #app.config['SESSION_COOKIE_SECURE'] = True
     return app

@@ -230,28 +230,29 @@ def profile():
         if g.user is not None:
             return render_template('auth/profile.html', title='Profile')
         else:
-            redirect(url_for('auth.login'))
+            return redirect(url_for('auth.login'))
 
 # /auth/user/:userid/ DELETE
 # Delete a user
-@bp.route('/user', methods=['DELETE'])
-def deleteUser(userStr):
-    if request.method == 'DELETE':
+@bp.route('/user/<userid>', methods=['POST'])
+def deleteUser(userid):
+    if request.method == 'POST':
         db = get_db()
         cnx = db.cursor()
-
+       # TODO: User is deleted from db, but still not logged out?? 
         try:
-            if g.user.username is userStr or g.user.isAdmin():
-                username = userStr
+            if g.user.id == int(userid) or g.user.isAdmin():
+                cnx.execute('DELETE FROM user WHERE id = %s', (userid,))
+                return redirect(url_for('categories.index'))
             else:
                 click.echo("Not authorized to delete")
-
-            if username is not None:
-                cnx.execute('DELETE FROM user WHERE username = %s', (username,))
+            
             db.commit()
+        
         except mysql.connector.Error as err:
             # TODO: specific error handling
             click.echo("YO YO YO: {}".format(err))
+        return redirect(url_for('auth.profile'))
 
 # /auth/user/logout
 # logout GET
@@ -262,8 +263,7 @@ def logout():
        cnx = db.cursor()
 
        if g.user is not None:
-           # TODO: token needs a default value indicating not logged in user
-           cnx.execute('UPDATE user SET token %s WHERE token = %s', ('null', authorized,))
+           cnx.execute('UPDATE user SET token %s WHERE token = %s', ('', authorized,))
        else:
            click.echo('Not logged in').format(authorized)
 

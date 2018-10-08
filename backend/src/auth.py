@@ -239,16 +239,16 @@ def deleteUser(userid):
     if request.method == 'POST':
         db = get_db()
         cnx = db.cursor()
-       # TODO: User is deleted from db, but still not logged out?? 
+       # TODO: User is deleted from db, but still not logged out??
         try:
             if g.user.id == int(userid) or g.user.isAdmin():
                 cnx.execute('DELETE FROM user WHERE id = %s', (userid,))
                 return redirect(url_for('categories.index'))
             else:
                 click.echo("Not authorized to delete")
-            
+
             db.commit()
-        
+
         except mysql.connector.Error as err:
             # TODO: specific error handling
             click.echo("YO YO YO: {}".format(err))
@@ -256,17 +256,17 @@ def deleteUser(userid):
 
 # /auth/user/logout
 # logout GET
-@bp.route
+@bp.route('/logout', methods=['GET'])
 def logout():
     if request.method == 'GET':
        db = get_db()
        cnx = db.cursor()
 
        if g.user is not None:
-           cnx.execute('UPDATE user SET token %s WHERE token = %s', ('', authorized,))
+           query = 'UPDATE user SET token = %s WHERE id = %s'
+           cnx.execute(query, (None, g.user.id,))
        else:
-           click.echo('Not logged in').format(authorized)
-
+           click.echo('Not logged in').format(g.user.username)
        db.commit()
        return redirect(url_for('categories.index'))
 

@@ -74,7 +74,7 @@ def create_newthread(categoryid):
             threadid=cursor.lastrowid
             cursor.execute("INSERT INTO `post` (`title`, `content`, `timestamp`, `userid`, `threadid`) VALUES (%s, %s, %s, %s, %s)", (title,content,timestamp,g.user.id,threadid))
             cnx.commit()
-        return redirect("/thread/"+categoryid+"/"+str(threadid)+"/")
+        return redirect("/post/"+categoryid+"/"+str(threadid)+"/")
     else:
         click.echo("Log in to post a new thread.")
 

@@ -7,9 +7,11 @@
           <h2>
               <a href=/post/{{ categoryid }}/{{ thread.0 }}/ style="color:#202020" >{{ thread.1 | e }}</a>
               <p align="right">
+                {% if g.user != None  %}
                 <form action="{{ url_for('threads.deleteThread', threadid=thread.0) }}" method="POST">
                     <input type=submit value=Delete>
                 </form>
+                {% endif %}
             </p>
           </h2>
         </div>
@@ -17,6 +19,7 @@
   {% else %}
     <h3>There are no threads in this category</h3>
   {% endfor %}
+  {% if g.user != None %}
 <div>
   <h2> Create new thread </h2>
   <div>
@@ -34,4 +37,5 @@
       </div>
     </form>
   </div>
+  {% endif %}
 {% endblock %}
